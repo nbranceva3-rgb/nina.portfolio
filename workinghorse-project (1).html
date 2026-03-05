@@ -15,7 +15,7 @@
       color: #111;
       font-family: 'DM Sans', sans-serif;
       font-weight: 300;
-      overflow-x: clip;
+      overflow-x: hidden;
       cursor: none;
     }
 
@@ -256,15 +256,13 @@
 
     /* ONBOARDING SCROLL STRIP */
     .ob-scroll-wrap {
-      grid-column: 1 / -1;
-      margin-top: 56px;
+      margin-top: 40px;
       overflow-x: auto;
+      overflow-y: visible;
       -webkit-overflow-scrolling: touch;
       scrollbar-width: thin;
       scrollbar-color: #ddd transparent;
       padding-bottom: 12px;
-      min-width: 0;
-      width: 100%;
     }
     .ob-scroll-wrap::-webkit-scrollbar { height: 4px; }
     .ob-scroll-wrap::-webkit-scrollbar-track { background: transparent; }
@@ -411,10 +409,9 @@
           <div class="how-text"><strong>Focus Mode</strong>, history and No-Go Sites — tools for deep focus, introduced only after the user understands the core product.</div>
         </div>
       </div>
-    </div>
-    <!-- Horizontal onboarding scroll -->
-    <div class="ob-scroll-wrap">
-      <div class="ob-track">
+      <!-- Horizontal onboarding scroll -->
+      <div class="ob-scroll-wrap">
+        <div class="ob-track">
       <div class="ob-item">
         <img class="ob-img" loading="lazy" src="wh-img/img-02.png" alt="1/6 — Import your tabs">
         <span class="ob-label">1/6 — Import your tabs</span>
@@ -451,6 +448,7 @@
         <img class="ob-img" loading="lazy" src="wh-img/img-10.png" alt="Done — Congratulations">
         <span class="ob-label">Done — Congratulations</span>
       </div>
+        </div>
       </div>
     </div>
   </div>
