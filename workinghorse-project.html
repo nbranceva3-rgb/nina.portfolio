@@ -24,10 +24,15 @@
       background: #111; border-radius: 50%;
       pointer-events: none; z-index: 9999;
       transform: translate(-50%, -50%);
-      transition: transform 0.15s ease, width 0.2s ease, height 0.2s ease;
+      transition: transform 0.15s ease, width 0.2s ease, height 0.2s ease, background 0.2s ease, border 0.2s ease;
       opacity: 0;
     }
     body:hover #cursor { opacity: 1; }
+    #cursor.link-hover {
+      width: 28px; height: 28px;
+      background: transparent;
+      border: 1.5px solid #111;
+    }
 
     nav {
       position: fixed; top: 0; left: 0; right: 0;
@@ -124,7 +129,7 @@
       background: #111; color: #fff;
       font-family: 'JetBrains Mono', monospace;
       font-size: 13px; letter-spacing: 0.05em;
-      padding: 10px 20px; border-radius: 4px;
+      padding: 10px 20px; border-radius: 8px;
     }
     .mm-arrow { font-family: 'JetBrains Mono', monospace; color: #bbb; font-size: 18px; }
 
@@ -136,6 +141,7 @@
     }
     .how-item:first-child { border-top: 1px solid #efefef; }
     .how-num { font-family: 'JetBrains Mono', monospace; font-size: 11px; color: #bbb; min-width: 28px; padding-top: 3px; flex-shrink: 0; }
+    .how-list--sessions .how-num { min-width: 88px; }
     .how-text { font-size: 16px; line-height: 1.7; color: #444; min-width: 0; }
     .how-text strong { color: #111; font-weight: 500; }
 
@@ -232,6 +238,7 @@
       font-size: 12px; letter-spacing: 0.18em; text-transform: uppercase;
       color: #111; text-decoration: none;
       padding-bottom: 4px; border-bottom: 1px solid #111; transition: gap 0.3s;
+      cursor: pointer;
     }
     .back-link:hover { gap: 18px; }
 
@@ -261,7 +268,7 @@
     }
     .ob-scroll-wrap {
       width: 100%;
-      overflow: hidden;
+      overflow: visible;
       margin: 0 0 48px;
     }
     .ob-track-outer {
@@ -269,6 +276,7 @@
       width: max-content;
       animation: ob-scroll 40s linear infinite;
       will-change: transform;
+      overflow: hidden;
     }
     .ob-track-outer:hover { animation-play-state: paused; }
     .ob-track {
@@ -280,8 +288,17 @@
       display: flex;
       flex-direction: column;
       gap: 10px;
-      width: 320px;
+      width: 420px;
       flex-shrink: 0;
+      position: relative;
+      z-index: 1;
+      transition: transform 0.35s ease, z-index 0s;
+      cursor: pointer;
+    }
+    .ob-item:hover {
+      transform: scale(2);
+      z-index: 100;
+      transition: transform 0.35s ease;
     }
     .ob-img {
       width: 100%;
@@ -302,7 +319,7 @@
       display: inline-flex; align-items: center; gap: 6px;
       font-family: 'JetBrains Mono', monospace;
       font-size: 11px; letter-spacing: 0.08em;
-      padding: 6px 14px; border-radius: 100px;
+      padding: 6px 14px; border-radius: 8px;
       background: #111; color: #fff;
       margin-bottom: 24px;
     }
@@ -404,7 +421,7 @@
       <h2>Do, don't read</h2>
       <span class="principle-pill">Do → Show → Tell Principle</span>
       <p>Instead of walkthroughs or tooltip tours, the onboarding is embedded into the interface itself. Users learn by doing — selecting links, creating a folder, locking a working context — and the system confirms progress at each step.</p>
-      <div class="how-list">
+      <div class="how-list how-list--sessions">
         <div class="how-item">
           <span class="how-num">1st session</span>
           <div class="how-text">Core actions only. Import links, understand the mental model. Goal: reduce cognitive load and help users succeed within the first minutes.</div>
@@ -523,6 +540,11 @@
     });
   }, { threshold: 0.1 });
   sections.forEach(s => observer.observe(s));
+
+  document.querySelectorAll('a, button').forEach(el => {
+    el.addEventListener('mouseenter', () => cursor.classList.add('link-hover'));
+    el.addEventListener('mouseleave', () => cursor.classList.remove('link-hover'));
+  });
 </script>
 </body>
 </html>
