@@ -27,10 +27,15 @@
       pointer-events: none;
       z-index: 9999;
       transform: translate(-50%, -50%);
-      transition: transform 0.15s ease, width 0.2s ease, height 0.2s ease;
+      transition: transform 0.15s ease, width 0.2s ease, height 0.2s ease, background 0.2s ease, border 0.2s ease;
       opacity: 0;
     }
     body:hover #cursor { opacity: 1; }
+    #cursor.link-hover {
+      width: 28px; height: 28px;
+      background: transparent;
+      border: 1.5px solid #111;
+    }
 
     nav {
       position: fixed; top: 0; left: 0; right: 0;
@@ -199,6 +204,7 @@
       font-size: 12px; letter-spacing: 0.18em; text-transform: uppercase;
       color: #111; text-decoration: none;
       padding-bottom: 4px; border-bottom: 1px solid #111; transition: gap 0.3s;
+      cursor: pointer;
     }
     .back-link:hover { gap: 18px; }
     .behance-link {
@@ -366,6 +372,11 @@
     });
   }, { threshold: 0.1 });
   sections.forEach(s => observer.observe(s));
+
+  document.querySelectorAll('a, button').forEach(el => {
+    el.addEventListener('mouseenter', () => cursor.classList.add('link-hover'));
+    el.addEventListener('mouseleave', () => cursor.classList.remove('link-hover'));
+  });
 </script>
 </body>
 </html>
