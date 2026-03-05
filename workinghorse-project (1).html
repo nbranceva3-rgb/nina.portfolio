@@ -113,6 +113,7 @@
       max-width: 620px; margin-bottom: 20px;
     }
     .section-body p:last-child { margin-bottom: 0; }
+    .section-body { min-width: 0; }
 
     /* MENTAL MODEL */
     .mental-model {
@@ -255,6 +256,7 @@
 
     /* ONBOARDING SCROLL STRIP */
     .ob-scroll-wrap {
+      grid-column: 1 / -1;
       margin-top: 56px;
       overflow-x: auto;
       -webkit-overflow-scrolling: touch;
@@ -407,6 +409,7 @@
           <div class="how-text"><strong>Focus Mode</strong>, history and No-Go Sites — tools for deep focus, introduced only after the user understands the core product.</div>
         </div>
       </div>
+    </div>
     <!-- Horizontal onboarding scroll -->
     <div class="ob-scroll-wrap">
       <div class="ob-track">
@@ -447,7 +450,6 @@
         <span class="ob-label">Done — Congratulations</span>
       </div>
       </div>
-    </div>
     </div>
   </div>
 
