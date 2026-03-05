@@ -91,7 +91,7 @@
 
     /* STANDARD SECTION */
     .content-section {
-      padding: 100px 0; border-top: 1px solid #e8e8e8;
+      padding: 100px 0 48px; border-top: 1px solid #e8e8e8;
       display: grid; grid-template-columns: 280px 1fr;
       gap: 80px; align-items: start;
       opacity: 0; transform: translateY(30px);
@@ -262,7 +262,7 @@
     .ob-scroll-wrap {
       width: 100%;
       overflow: hidden;
-      margin: 60px 0;
+      margin: 0 0 48px;
     }
     .ob-track-outer {
       display: flex;
@@ -296,6 +296,15 @@
       letter-spacing: 0.1em;
       color: #bbb;
       text-align: center;
+    }
+
+    .principle-pill {
+      display: inline-flex; align-items: center; gap: 6px;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 11px; letter-spacing: 0.08em;
+      padding: 6px 14px; border-radius: 100px;
+      background: #111; color: #fff;
+      margin-bottom: 24px;
     }
   </style>
 </head>
@@ -360,7 +369,7 @@
   <div class="content-section" data-scroll>
     <p class="section-label">How it was solved</p>
     <div class="section-body">
-      <h2>Three principles, one product</h2>
+      <h2>Three core decisions</h2>
       <div class="how-list">
         <div class="how-item">
           <span class="how-num">01</span>
@@ -393,6 +402,7 @@
     <p class="section-label">Onboarding</p>
     <div class="section-body">
       <h2>Do, don't read</h2>
+      <span class="principle-pill">Do → Show → Tell Principle</span>
       <p>Instead of walkthroughs or tooltip tours, the onboarding is embedded into the interface itself. Users learn by doing — selecting links, creating a folder, locking a working context — and the system confirms progress at each step.</p>
       <div class="how-list">
         <div class="how-item">
@@ -471,7 +481,7 @@
       <h2>The screens</h2>
     </div>
     <div class="hifi-grid">
-      <img class="hifi-img" loading="lazy" src="wh-img/img-11.png" alt="Working Horse screen 1"><img class="hifi-img" loading="lazy" src="wh-img/img-12.png" alt="Working Horse screen 2"><img class="hifi-img" loading="lazy" src="wh-img/img-13.png" alt="Working Horse screen 3"><img class="hifi-img" loading="lazy" src="wh-img/img-14.png" alt="Working Horse screen 4"><img class="hifi-img" loading="lazy" src="wh-img/img-15.png" alt="Working Horse screen 5"><img class="hifi-img" loading="lazy" src="wh-img/img-16.png" alt="Working Horse screen 6"><img class="hifi-img" loading="lazy" src="wh-img/img-17.png" alt="Working Horse screen 7">
+      <img class="hifi-img" loading="lazy" src="wh-img/img-11.png" alt="Working Horse screen 1"><img class="hifi-img" loading="lazy" src="wh-img/img-14.png" alt="Working Horse screen 4"><img class="hifi-img" loading="lazy" src="wh-img/img-15.png" alt="Working Horse screen 5"><img class="hifi-img" loading="lazy" src="wh-img/img-13.png" alt="Working Horse screen 3"><img class="hifi-img" loading="lazy" src="wh-img/img-12.png" alt="Working Horse screen 2"><img class="hifi-img" loading="lazy" src="wh-img/img-17.png" alt="Working Horse screen 7"><img class="hifi-img" loading="lazy" src="wh-img/img-16.png" alt="Working Horse screen 6">
     </div>
   </div>
 </div>
@@ -484,12 +494,12 @@
       <h2>Early screens</h2>
     </div>
     <div class="lofi-grid">
-      <img class="lofi-img" loading="lazy" src="wh-img/img-18.png" alt="Working Horse lo-fi — success screen">
       <img class="lofi-img" loading="lazy" src="wh-img/img-19.png" alt="Working Horse lo-fi — move links modal">
       <img class="lofi-img" loading="lazy" src="wh-img/img-20.png" alt="Working Horse lo-fi — choose folder modal">
-          <img class="lofi-img" loading="lazy" src="wh-img/img-21.png" alt="Sorted links — tooltip">
+      <img class="lofi-img" loading="lazy" src="wh-img/img-21.png" alt="Sorted links — tooltip">
       <img class="lofi-img" loading="lazy" src="wh-img/img-22.png" alt="Plans — pricing">
       <img class="lofi-img" loading="lazy" src="wh-img/img-23.png" alt="Payment screen">
+      <img class="lofi-img" loading="lazy" src="wh-img/img-18.png" alt="Working Horse lo-fi — success screen">
       </div>
   </div>
 </div>
