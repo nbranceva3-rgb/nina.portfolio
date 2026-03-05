@@ -107,6 +107,9 @@
       font-size: 11px; letter-spacing: 0.22em; text-transform: uppercase;
       color: #bbb; padding-top: 6px; position: sticky; top: 100px;
     }
+    .section-col-left { display: flex; flex-direction: column; gap: 24px; align-self: start; }
+    .section-col-left .section-label { position: static; top: auto; }
+    .section-aside-img { width: 100%; height: auto; display: block; border-radius: 8px; }
     .section-body h2 {
       font-family: 'Bayon', sans-serif;
       font-size: clamp(36px, 4vw, 56px); line-height: 1.0;
@@ -269,7 +272,10 @@
     .ob-scroll-wrap {
       width: 100%;
       overflow: visible;
-      margin: 0 0 48px;
+      margin: -60px 0 48px;
+      padding: 60px 0;
+      position: relative;
+      z-index: 50;
     }
     .ob-track-outer {
       display: flex;
@@ -294,10 +300,9 @@
       cursor: pointer;
     }
     .ob-item:hover {
-      transform: scale(2);
+      transform: scale(1.5);
       z-index: 100;
       transition: transform 0.35s ease;
-      animation-play-state: paused;
     }
     .ob-scroll-wrap:has(.ob-item:hover) .ob-track-outer {
       animation-play-state: paused;
@@ -386,7 +391,10 @@
 
   <!-- HOW IT WAS SOLVED -->
   <div class="content-section" data-scroll>
-    <p class="section-label">How it was solved</p>
+    <div class="section-col-left">
+      <p class="section-label">How it was solved</p>
+      <img src="wh-img/img-25.png" class="section-aside-img" alt="How it was solved — illustration" loading="lazy">
+    </div>
     <div class="section-body">
       <h2>Three core decisions</h2>
       <div class="how-list">
@@ -500,7 +508,7 @@
       <h2>The screens</h2>
     </div>
     <div class="hifi-grid">
-      <img class="hifi-img" loading="lazy" src="wh-img/img-11.png" alt="Working Horse screen 1"><img class="hifi-img" loading="lazy" src="wh-img/img-14.png" alt="Working Horse screen 4"><img class="hifi-img" loading="lazy" src="wh-img/img-15.png" alt="Working Horse screen 5"><img class="hifi-img" loading="lazy" src="wh-img/img-13.png" alt="Working Horse screen 3"><img class="hifi-img" loading="lazy" src="wh-img/img-12.png" alt="Working Horse screen 2"><img class="hifi-img" loading="lazy" src="wh-img/img-17.png" alt="Working Horse screen 7"><img class="hifi-img" loading="lazy" src="wh-img/img-16.png" alt="Working Horse screen 6">
+      <img class="hifi-img" loading="lazy" src="wh-img/img-11.png" alt="Working Horse screen 1"><img class="hifi-img" loading="lazy" src="wh-img/img-14.png" alt="Working Horse screen 4"><img class="hifi-img" loading="lazy" src="wh-img/img-15.png" alt="Working Horse screen 5"><img class="hifi-img" loading="lazy" src="wh-img/img-13.png" alt="Working Horse screen 3"><img class="hifi-img" loading="lazy" src="wh-img/img-12.png" alt="Working Horse screen 2"><img class="hifi-img" loading="lazy" src="wh-img/img-17.png" alt="Working Horse screen 7"><img class="hifi-img" loading="lazy" src="wh-img/img-16.png" alt="Working Horse screen 6"><img class="hifi-img" loading="lazy" src="wh-img/img-26.png" alt="Working Horse screen 8">
     </div>
   </div>
 </div>
@@ -519,7 +527,6 @@
       <img class="lofi-img" loading="lazy" src="wh-img/img-22.png" alt="Plans — pricing">
       <img class="lofi-img" loading="lazy" src="wh-img/img-23.png" alt="Payment screen">
       <img class="lofi-img" loading="lazy" src="wh-img/img-18.png" alt="Working Horse lo-fi — success screen">
-      <img class="lofi-img" loading="lazy" src="wh-img/img-24.png" alt="Working Horse — Focus Mode in browser">
       </div>
   </div>
 </div>
