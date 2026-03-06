@@ -1,0 +1,540 @@
+---
+title: "Predictive Modeling: BB Fictional Loans Dataset"
+subtitle: "Logistic Regression — BadFlagCategory"
+author: "Nina Briantseva"
+date: "`r format(Sys.Date(), '%B %d, %Y')`"
+output:
+  pdf_document:
+    toc: true
+    toc_depth: 3
+    number_sections: true
+    fig_caption: true
+    fig_width: 7
+    fig_height: 4.5
+    latex_engine: xelatex
+geometry: margin=2.5cm
+fontsize: 11pt
+header-includes:
+  - \usepackage{booktabs}
+  - \usepackage{float}
+  - \usepackage{xcolor}
+  - \definecolor{badblue}{HTML}{4b8bbe}
+  - \definecolor{badred}{HTML}{e05252}
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(
+  echo      = TRUE,
+  warning   = FALSE,
+  message   = FALSE,
+  fig.align = "center",
+  fig.pos   = "H"
+)
+```
+
+```{r packages, include=FALSE}
+required <- c("tidyverse", "caret", "pROC", "corrplot", "scales", "knitr",
+              "kableExtra", "broom")
+for (pkg in required) {
+  if (!requireNamespace(pkg, quietly = TRUE))
+    install.packages(pkg, repos = "https://cloud.r-project.org")
+}
+library(tidyverse)
+library(caret)
+library(pROC)
+library(corrplot)
+library(scales)
+library(knitr)
+library(kableExtra)
+library(broom)
+```
+
+---
+
+\newpage
+
+# Introduction
+
+This report presents a predictive modeling analysis of the **BB Fictional Loans** dataset.
+The objective is to build a logistic regression model that predicts whether a loan will
+be classified as **bad** (`BadFlagCategory = 1`) or **good** (`BadFlagCategory = 0`).
+
+The workflow covers:
+
+1. Exploratory Data Analysis (EDA)
+2. Data cleaning and feature engineering
+3. Model training and reduction
+4. Evaluation (Accuracy, Precision, Recall, F1, AUC-ROC)
+5. Findings and recommendations
+
+---
+
+# Data Overview
+
+```{r load-data}
+loans_raw <- read.csv("BB_fictional_loans.csv", stringsAsFactors = FALSE)
+```
+
+```{r data-overview}
+cat("Rows:", nrow(loans_raw), " | Columns:", ncol(loans_raw))
+```
+
+```{r column-types, echo=FALSE}
+col_info <- data.frame(
+  Column  = names(loans_raw),
+  Type    = sapply(loans_raw, class),
+  Example = sapply(loans_raw, function(x) as.character(x[1]))
+)
+kable(col_info, caption = "Column types and example values",
+      booktabs = TRUE, row.names = FALSE) %>%
+  kable_styling(latex_options = c("hold_position", "striped"), font_size = 9)
+```
+
+## Missing Values
+
+```{r missing}
+miss <- colSums(is.na(loans_raw))
+kable(data.frame(Column = names(miss), Missing = miss),
+      caption = "Missing values per column",
+      booktabs = TRUE, row.names = FALSE) %>%
+  kable_styling(latex_options = c("hold_position", "striped"), font_size = 9)
+```
+
+> **Note:** No missing values. However, `Education = "-1"` encodes unknown education level and will be recoded.
+
+---
+
+# Exploratory Data Analysis
+
+## Target Variable Distribution
+
+```{r target-dist, fig.cap="Distribution of BadFlagCategory"}
+tbl <- table(loans_raw$BadFlagCategory)
+df_tbl <- as.data.frame(tbl) %>%
+  mutate(pct = Freq / sum(Freq),
+         label = paste0(Freq, "\n(", round(pct * 100, 1), "%)"))
+
+ggplot(df_tbl, aes(x = Var1, y = Freq, fill = Var1)) +
+  geom_col(width = 0.45) +
+  geom_text(aes(label = label), vjust = -0.3, size = 3.5) +
+  scale_fill_manual(values = c("0" = "#4b8bbe", "1" = "#e05252")) +
+  scale_y_continuous(labels = comma_format(), expand = expansion(mult = c(0, 0.12))) +
+  labs(x = "BadFlagCategory  (0 = Good, 1 = Bad)",
+       y = "Count", title = "Loan Quality Distribution") +
+  theme_minimal() + theme(legend.position = "none")
+```
+
+The dataset is **moderately imbalanced**: 78.3% good loans vs. 21.7% bad loans.
+
+## Numeric Variable Distributions
+
+```{r numeric-boxplots, fig.height=7, fig.cap="Numeric variables by loan quality"}
+numeric_vars <- c("Age", "Amount", "ExternalCreditScore",
+                  "LoanDuration", "IncomeTotal", "LiabilitiesTotal")
+
+loans_long <- loans_raw %>%
+  select(BadFlagCategory, all_of(numeric_vars)) %>%
+  pivot_longer(-BadFlagCategory, names_to = "Variable", values_to = "Value")
+
+ggplot(loans_long, aes(x = BadFlagCategory, y = Value, fill = BadFlagCategory)) +
+  geom_boxplot(outlier.alpha = 0.15, outlier.size = 0.3) +
+  facet_wrap(~ Variable, scales = "free_y", ncol = 3) +
+  scale_fill_manual(values = c("0" = "#4b8bbe", "1" = "#e05252")) +
+  labs(x = "BadFlagCategory", y = NULL) +
+  theme_minimal() + theme(legend.position = "none",
+                          strip.text = element_text(face = "bold", size = 8))
+```
+
+## Bad Loan Rate by Categorical Variables
+
+```{r categorical-rates, fig.height=7, fig.cap="Bad loan rate by categorical predictors"}
+cat_vars <- c("NewCreditCustomer", "ExternalPaymentDefaultRemarks",
+              "Country", "Gender", "Education")
+
+bad_rates <- map_dfr(cat_vars, function(v) {
+  loans_raw %>%
+    mutate(is_bad = as.integer(BadFlagCategory == "1")) %>%
+    group_by(Category = factor(.data[[v]]), Variable = v) %>%
+    summarise(bad_rate = mean(is_bad), n = n(), .groups = "drop")
+})
+
+ggplot(bad_rates, aes(x = Category, y = bad_rate, fill = bad_rate)) +
+  geom_col() +
+  geom_text(aes(label = paste0(round(bad_rate * 100, 0), "%")),
+            vjust = -0.4, size = 2.8) +
+  facet_wrap(~ Variable, scales = "free_x", ncol = 2) +
+  scale_fill_gradient(low = "#aecde8", high = "#e05252") +
+  scale_y_continuous(labels = percent_format(),
+                     expand = expansion(mult = c(0, 0.15))) +
+  labs(x = NULL, y = "Bad Loan Rate") +
+  theme_minimal() +
+  theme(axis.text.x = element_text(angle = 35, hjust = 1, size = 7),
+        strip.text  = element_text(face = "bold", size = 8),
+        legend.position = "none")
+```
+
+## Correlation Matrix
+
+```{r corr-matrix, fig.cap="Pearson correlation among numeric variables and target"}
+cor_data <- loans_raw %>%
+  select(all_of(numeric_vars)) %>%
+  mutate(BadFlag = as.integer(loans_raw$BadFlagCategory))
+
+cor_mat <- cor(cor_data, use = "pairwise.complete.obs")
+corrplot(cor_mat, method = "color", type = "upper",
+         tl.col = "black", tl.srt = 45, addCoef.col = "black",
+         number.cex = 0.65, mar = c(0, 0, 1, 0))
+```
+
+```{r corr-table, echo=FALSE}
+corr_df <- as.data.frame(round(cor_mat, 3))
+kable(corr_df, caption = "Correlation matrix (numeric variables + target)",
+      booktabs = TRUE) %>%
+  kable_styling(latex_options = c("hold_position", "striped", "scale_down"),
+                font_size = 8)
+```
+
+> **Key observation:** `IncomeTotal` and `LiabilitiesTotal` have a correlation
+of **`r round(cor(loans_raw$IncomeTotal, loans_raw$LiabilitiesTotal), 3)`**.
+`ExternalCreditScore` shows the strongest negative correlation with
+`BadFlagCategory` (`r round(cor_mat["ExternalCreditScore","BadFlag"], 3)`).
+
+---
+
+# Data Cleaning & Feature Engineering
+
+```{r feature-engineering}
+loans <- loans_raw
+
+# Parse dates
+loans$LoanDate  <- as.Date(loans$LoanDate)
+loans$LoanMonth <- month(loans$LoanDate)
+
+# Recode unknown education
+loans$Education[loans$Education == "-1"] <- "Unknown"
+
+# Cap outliers at 99th percentile
+cap99 <- function(x) pmin(x, quantile(x, 0.99, na.rm = TRUE))
+loans$Amount_c <- cap99(loans$Amount)
+loans$Income_c <- cap99(loans$IncomeTotal)
+loans$Liab_c   <- cap99(loans$LiabilitiesTotal)
+loans$CS_c     <- cap99(loans$ExternalCreditScore)
+
+# Debt-to-income ratio
+loans$DebtToIncome <- ifelse(loans$Income_c > 0,
+                              loans$Liab_c / loans$Income_c, NA)
+
+# Bin numeric variables
+loans$Age_bin <- cut(loans$Age,
+  breaks = c(0, 24, 34, 44, 54, 64, Inf),
+  labels = c("18-24","25-34","35-44","45-54","55-64","65+"), right = TRUE)
+
+loans$Amount_bin <- cut(loans$Amount_c,
+  breaks = quantile(loans$Amount_c, probs = 0:4/4, na.rm = TRUE),
+  labels = c("Q1","Q2","Q3","Q4"), include.lowest = TRUE)
+
+loans$CreditScore_bin <- cut(loans$CS_c,
+  breaks = c(-Inf, 400, 600, 750, Inf),
+  labels = c("Poor","Fair","Good","Excellent"), right = TRUE)
+
+loans$Duration_bin <- cut(loans$LoanDuration,
+  breaks = c(0, 12, 24, 36, Inf),
+  labels = c("Short","Medium","Long","VeryLong"), right = TRUE)
+
+loans$Income_bin <- cut(loans$Income_c,
+  breaks = quantile(loans$Income_c, probs = 0:4/4, na.rm = TRUE),
+  labels = c("Low","MidLow","MidHigh","High"), include.lowest = TRUE)
+
+loans$DTI_bin <- cut(loans$DebtToIncome,
+  breaks = c(-Inf, 0.2, 0.5, 1.0, Inf),
+  labels = c("DTI_Low","DTI_Moderate","DTI_High","DTI_VeryHigh"), right = TRUE)
+loans$DTI_bin <- addNA(loans$DTI_bin)
+levels(loans$DTI_bin)[is.na(levels(loans$DTI_bin))] <- "DTI_Unknown"
+
+# Factors
+loans$BadFlagCategory <- factor(loans$BadFlagCategory, levels = c("0","1"))
+loans$NewCreditCustomer <- factor(loans$NewCreditCustomer)
+loans$Gender  <- factor(loans$Gender)
+loans$Country <- factor(loans$Country)
+loans$Education <- factor(loans$Education)
+loans$ExternalPaymentDefaultRemarks <- factor(loans$ExternalPaymentDefaultRemarks)
+```
+
+## New Features Summary
+
+```{r feat-summary, echo=FALSE}
+feat_tbl <- data.frame(
+  Feature      = c("LoanMonth","Age_bin","Amount_bin","CreditScore_bin",
+                   "Duration_bin","Income_bin","DTI_bin"),
+  Description  = c("Month of loan origination (seasonal effect)",
+                   "Age in 10-yr bands: 18-24, 25-34, …, 65+",
+                   "Loan amount quartiles (outliers capped at p99)",
+                   "Credit score bands: Poor / Fair / Good / Excellent",
+                   "Duration bands: Short ≤12m, Medium ≤24m, Long ≤36m, VeryLong",
+                   "Income quartiles (outliers capped at p99)",
+                   "Debt-to-income ratio bands (0.2 / 0.5 / 1.0 thresholds)")
+)
+kable(feat_tbl, caption = "Engineered features",
+      booktabs = TRUE, col.names = c("Feature","Description")) %>%
+  kable_styling(latex_options = c("hold_position","striped"), font_size = 9)
+```
+
+---
+
+# Model Training
+
+## Train / Test Split
+
+Stratified 70 / 30 split to preserve class balance.
+
+```{r split}
+model_vars <- c("BadFlagCategory","NewCreditCustomer","Gender","Country",
+                "Education","ExternalPaymentDefaultRemarks",
+                "Age_bin","Amount_bin","CreditScore_bin","Duration_bin",
+                "Income_bin","DTI_bin","LoanMonth")
+
+model_data <- loans %>%
+  select(all_of(model_vars)) %>%
+  mutate(LoanMonth = factor(LoanMonth)) %>%
+  drop_na()
+
+set.seed(42)
+idx   <- createDataPartition(model_data$BadFlagCategory, p = 0.70, list = FALSE)
+train <- model_data[idx, ]
+test  <- model_data[-idx, ]
+```
+
+```{r split-table, echo=FALSE}
+split_df <- data.frame(
+  Split     = c("Train (70%)", "Test (30%)", "Total"),
+  Rows      = c(nrow(train), nrow(test), nrow(model_data)),
+  Good_0    = c(sum(train$BadFlagCategory == "0"),
+                sum(test$BadFlagCategory  == "0"),
+                sum(model_data$BadFlagCategory == "0")),
+  Bad_1     = c(sum(train$BadFlagCategory == "1"),
+                sum(test$BadFlagCategory  == "1"),
+                sum(model_data$BadFlagCategory == "1")),
+  Bad_Rate  = round(c(mean(train$BadFlagCategory == "1"),
+                      mean(test$BadFlagCategory  == "1"),
+                      mean(model_data$BadFlagCategory == "1")), 4)
+)
+kable(split_df, caption = "Train / test split",
+      booktabs = TRUE, col.names = c("Split","Rows","Good (0)","Bad (1)","Bad rate")) %>%
+  kable_styling(latex_options = c("hold_position","striped"), font_size = 10)
+```
+
+## Full Logistic Regression Model
+
+```{r logit-full}
+logit_full <- glm(BadFlagCategory ~ .,
+                  data   = train,
+                  family = binomial(link = "logit"))
+```
+
+```{r full-coef-table, echo=FALSE}
+full_coef <- tidy(logit_full) %>%
+  mutate(across(c(estimate, std.error, statistic), ~ round(., 4)),
+         p.value = format.pval(p.value, digits = 3, eps = 0.001),
+         sig = ifelse(as.numeric(gsub("<","",p.value)) < 0.05 |
+                        startsWith(p.value, "<"), "*", ""))
+
+kable(full_coef, caption = "Full model coefficients",
+      booktabs = TRUE, col.names = c("Term","Estimate","Std.Error","z","p-value","Sig.")) %>%
+  kable_styling(latex_options = c("hold_position","striped","scale_down"),
+                font_size = 7.5)
+```
+
+## Reduced Model (p < 0.05 predictors only)
+
+```{r logit-reduced}
+sig_terms <- tidy(logit_full) %>%
+  filter(p.value < 0.05, term != "(Intercept)") %>%
+  pull(term)
+
+all_preds <- setdiff(names(train), "BadFlagCategory")
+sig_vars  <- Filter(function(v) any(startsWith(sig_terms, v)), all_preds)
+
+formula_reduced <- as.formula(
+  paste("BadFlagCategory ~", paste(sig_vars, collapse = " + "))
+)
+logit_reduced <- glm(formula_reduced, data = train,
+                     family = binomial(link = "logit"))
+```
+
+Significant base variables retained: **`r paste(sig_vars, collapse = ", ")`**
+
+```{r reduced-coef-table, echo=FALSE}
+red_coef <- tidy(logit_reduced) %>%
+  mutate(across(c(estimate, std.error, statistic), ~ round(., 4)),
+         p.value = format.pval(p.value, digits = 3, eps = 0.001))
+
+kable(red_coef, caption = "Reduced model coefficients",
+      booktabs = TRUE, col.names = c("Term","Estimate","Std.Error","z","p-value")) %>%
+  kable_styling(latex_options = c("hold_position","striped","scale_down"),
+                font_size = 7.5)
+```
+
+---
+
+# Model Evaluation
+
+```{r eval-func, echo=FALSE}
+eval_model <- function(model, test_df, label = "Model", threshold = 0.5) {
+  probs  <- predict(model, newdata = test_df, type = "response")
+  preds  <- factor(ifelse(probs >= threshold, "1", "0"), levels = c("0","1"))
+  actual <- test_df$BadFlagCategory
+  cm     <- confusionMatrix(preds, actual, positive = "1")
+  roc_obj <- roc(as.numeric(actual) - 1, probs, quiet = TRUE)
+  list(cm = cm, roc = roc_obj, auc = auc(roc_obj), probs = probs, label = label)
+}
+
+res_full    <- eval_model(logit_full,    test, "Full Model")
+res_reduced <- eval_model(logit_reduced, test, "Reduced Model")
+```
+
+## Confusion Matrices
+
+```{r cm-full, echo=FALSE}
+cm_df_full <- as.data.frame(res_full$cm$table)
+kable(res_full$cm$table, caption = "Confusion matrix — Full Model",
+      booktabs = TRUE) %>%
+  kable_styling(latex_options = c("hold_position","striped"), font_size = 10)
+```
+
+```{r cm-reduced, echo=FALSE}
+kable(res_reduced$cm$table, caption = "Confusion matrix — Reduced Model",
+      booktabs = TRUE) %>%
+  kable_styling(latex_options = c("hold_position","striped"), font_size = 10)
+```
+
+## Metrics Comparison
+
+```{r metrics-table, echo=FALSE}
+get_metrics <- function(res) {
+  data.frame(
+    Model     = res$label,
+    Accuracy  = round(res$cm$overall["Accuracy"],  4),
+    Precision = round(res$cm$byClass["Precision"], 4),
+    Recall    = round(res$cm$byClass["Recall"],    4),
+    F1        = round(res$cm$byClass["F1"],        4),
+    AUC_ROC   = round(res$auc,                     4)
+  )
+}
+
+metrics_tbl <- bind_rows(get_metrics(res_full), get_metrics(res_reduced))
+kable(metrics_tbl, caption = "Model performance comparison",
+      booktabs = TRUE, row.names = FALSE,
+      col.names = c("Model","Accuracy","Precision","Recall","F1","AUC-ROC")) %>%
+  kable_styling(latex_options = c("hold_position","striped"), font_size = 10)
+```
+
+## ROC Curves
+
+```{r roc-curves, fig.cap="ROC curves — Full vs. Reduced model", fig.height=4.5}
+par(mfrow = c(1, 2))
+
+plot(res_full$roc, col = "#4b8bbe", lwd = 2.5, main = "Full Model",
+     legacy.axes = TRUE)
+abline(a = 0, b = 1, lty = 2, col = "grey60")
+legend("bottomright",
+       legend = paste("AUC =", round(res_full$auc, 3)),
+       col = "#4b8bbe", lwd = 2)
+
+plot(res_reduced$roc, col = "#e05252", lwd = 2.5, main = "Reduced Model",
+     legacy.axes = TRUE)
+abline(a = 0, b = 1, lty = 2, col = "grey60")
+legend("bottomright",
+       legend = paste("AUC =", round(res_reduced$auc, 3)),
+       col = "#e05252", lwd = 2)
+
+par(mfrow = c(1, 1))
+```
+
+---
+
+# Key Predictors
+
+```{r coef-plot, fig.cap="Top 20 coefficients — Reduced Logistic Regression", fig.height=6}
+coef_df <- tidy(logit_reduced) %>%
+  filter(term != "(Intercept)") %>%
+  arrange(desc(abs(estimate))) %>%
+  head(20)
+
+ggplot(coef_df, aes(x = reorder(term, estimate), y = estimate,
+                    fill = estimate > 0)) +
+  geom_col() +
+  coord_flip() +
+  scale_fill_manual(values = c("TRUE"  = "#e05252",
+                               "FALSE" = "#4b8bbe"),
+                    labels = c("Protective (lowers risk)",
+                               "Risk factor (raises risk)")) +
+  labs(title  = "Top 20 Coefficients — Reduced Logistic Regression",
+       subtitle = "Positive coefficient = higher probability of bad loan",
+       x = NULL, y = "Log-odds coefficient", fill = NULL) +
+  theme_minimal() +
+  theme(legend.position = "bottom",
+        axis.text.y     = element_text(size = 8))
+```
+
+---
+
+# Findings & Recommendations
+
+## Summary Table
+
+```{r findings-table, echo=FALSE}
+findings <- data.frame(
+  Item  = c("Dataset size","Bad loan rate","Missing values",
+            "Full model AUC","Reduced model AUC",
+            "Strongest predictor","Class imbalance"),
+  Value = c(
+    paste0(format(nrow(loans_raw), big.mark = ","), " loans"),
+    paste0(round(mean(loans_raw$BadFlagCategory == "1") * 100, 1), "%"),
+    "None",
+    round(res_full$auc,    4),
+    round(res_reduced$auc, 4),
+    coef_df$term[1],
+    "78.3% Good vs 21.7% Bad"
+  )
+)
+kable(findings, caption = "Summary of findings",
+      booktabs = TRUE, col.names = c("Item","Value")) %>%
+  kable_styling(latex_options = c("hold_position","striped"), font_size = 10)
+```
+
+## Key Conclusions
+
+1. **ExternalCreditScore** and **ExternalPaymentDefaultRemarks** are the strongest
+   predictors of loan default — the credit bureau data is highly informative.
+
+2. **NewCreditCustomer** borrowers have a notably different risk profile from returning
+   customers, suggesting separate models may improve performance.
+
+3. **Country** and **Income level** contribute meaningfully — the geographic and
+   economic context matters.
+
+4. The **reduced model retains** `r round(res_reduced$auc / res_full$auc * 100, 1)`%
+   of the full model's discriminatory power with fewer predictors, making it
+   preferable for interpretability and production deployment.
+
+5. **Class imbalance** (78/22 split) is moderate. For deployment, consider
+   class-weighted training or threshold tuning to optimise Precision/Recall trade-off
+   based on the business cost of false negatives vs. false positives.
+
+---
+
+\newpage
+
+# Session Info
+
+```{r session-info, echo=FALSE}
+si <- sessionInfo()
+cat("R version:", R.version$version.string, "\n")
+cat("Platform: ", R.version$platform, "\n\n")
+cat("Key packages:\n")
+pkgs <- c("tidyverse","caret","pROC","corrplot","knitr","kableExtra")
+for (p in pkgs) {
+  v <- tryCatch(as.character(packageVersion(p)), error = function(e) "N/A")
+  cat(sprintf("  %-15s %s\n", p, v))
+}
+```
