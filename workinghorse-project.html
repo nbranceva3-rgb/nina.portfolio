@@ -244,6 +244,11 @@
       cursor: pointer;
     }
     .back-link:hover { gap: 18px; }
+    .behance-link {
+      font-size: 11px; letter-spacing: 0.16em; text-transform: uppercase;
+      color: #999; text-decoration: none; transition: color 0.3s;
+    }
+    .behance-link:hover { color: #111; }
 
     @keyframes fadeUp {
       from { opacity: 0; transform: translateY(24px); }
@@ -337,7 +342,7 @@
 <div id="cursor"></div>
 
 <nav>
-  <a href="index.html" class="nav-logo">Nina Branceva</a>
+  <a href="index.html" class="nav-logo">Nina Briantseva</a>
   <a href="index.html" class="nav-back">
     <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
       <path d="M10 3L5 8L10 13" stroke="#999" stroke-width="1.2" stroke-linecap="round"/>
@@ -393,7 +398,7 @@
   <div class="content-section" data-scroll>
     <div class="section-col-left">
       <p class="section-label">How it was solved</p>
-      <img src="wh-img/img-25.png" class="section-aside-img" alt="How it was solved — illustration" loading="lazy" style="margin-top: 88px; margin-left: -340px; width: calc(100% + 520px); max-width: none; display: block;">
+      <img src="wh-img/img-25.png" class="section-aside-img" alt="How it was solved — illustration" loading="lazy" style="margin-top: 88px; margin-left: -370px; width: calc(100% + 520px); max-width: none; display: block;">
     </div>
     <div class="section-body">
       <h2>Three core decisions</h2>
@@ -534,6 +539,13 @@
 <!-- FOOTER -->
 <div class="project-footer">
   <a href="index.html" class="back-link">← Back to all work</a>
+  <div style="display: flex; flex-direction: column; align-items: flex-end; gap: 8px;">
+    <a href="mailto:nbranceva3@gmail.com" class="behance-link" style="font-size: 13px; color: #111; font-weight: 500;">nbranceva3@gmail.com</a>
+    <div style="display: flex; gap: 20px;">
+      <a href="https://www.linkedin.com/in/nina-briantseva-361566220/?skipRedirect=true" target="_blank" class="behance-link">LinkedIn</a>
+      <a href="https://www.behance.net/bc1db05f" target="_blank" class="behance-link">Behance</a>
+    </div>
+  </div>
 </div>
 
 <script>
