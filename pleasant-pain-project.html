@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Pleasant Pain — Speculative Project · Nina Branceva</title>
+  <title>Pleasant Pain — Speculative Project · Nina Briantseva</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Bayon&family=JetBrains+Mono:wght@300;400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
@@ -61,8 +61,13 @@
     .behance-link:hover { color: #111; }
     @keyframes fadeUp { from { opacity: 0; transform: translateY(24px); } to { opacity: 1; transform: translateY(0); } }
     @media (max-width: 768px) {
-      nav { padding: 20px 24px; }
-      .project-hero { padding-top: 100px; }
+      body { cursor: auto; }
+      #cursor { display: none; }
+      nav { padding: 16px 20px; }
+      .project-hero { padding-top: 90px; padding-left: 20px; padding-right: 20px; }
+      .project-meta { flex-wrap: wrap; gap: 20px; }
+      .meta-divider { display: none; }
+      .insight-box { padding: 28px 20px; }
       .hero-image-wrap { padding: 0 24px; }
       .project-content { padding: 0 24px; }
       .content-section { grid-template-columns: 1fr; gap: 24px; }
@@ -79,7 +84,7 @@
 <div id="cursor"></div>
 
 <nav>
-  <a href="index.html" class="nav-logo">Nina Branceva</a>
+  <a href="index.html" class="nav-logo">Nina Briantseva</a>
   <a href="index.html" class="nav-back">
     <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
       <path d="M10 3L5 8L10 13" stroke="#999" stroke-width="1.2" stroke-linecap="round"/>
@@ -183,12 +188,8 @@
 </div>
 
 <div class="project-content">
-  <div class="content-section" data-scroll>
-    <p class="section-label">Extension</p>
-    <div class="section-body">
-      <h2>Расширение</h2>
-      <img class="mockup-img" src="wh-img/img-41.png" alt="Pleasant Pain browser extension" style="width:100%; margin-top:32px;">
-    </div>
+  <div class="mockups-section" data-scroll style="padding-top:0; border-top:none;">
+    <img class="mockup-img" src="wh-img/img-41.png" alt="Pleasant Pain browser extension" style="width:100%;">
   </div>
 </div>
 
