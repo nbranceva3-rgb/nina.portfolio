@@ -90,7 +90,7 @@
       width: 100%; max-width: 1100px; margin: 0 auto; padding: 0 48px;
       opacity: 0; animation: fadeUp 0.8s 0.5s forwards;
     }
-    .hero-image-wrap img { width: 100%; height: auto; display: block; }
+    .hero-image-wrap img { width: calc(100% + 60px); height: auto; display: block; transform: translateX(-40px) translateY(30px); }
 
     .project-content { max-width: 1100px; margin: 0 auto; padding: 0 48px; }
 
@@ -327,14 +327,21 @@
       text-align: center;
     }
 
-    .principle-pill {
-      display: inline-flex; align-items: center; gap: 6px;
-      font-family: 'JetBrains Mono', monospace;
-      font-size: 11px; letter-spacing: 0.08em;
-      padding: 6px 14px; border-radius: 8px;
-      background: #111; color: #fff;
+    .principle-pill { display: none; }
+    .principle-hierarchy {
+      display: inline-flex; align-items: center; gap: 10px;
       margin-bottom: 24px;
     }
+    .ph-pill {
+      display: inline-flex; align-items: center;
+      font-family: 'JetBrains Mono', monospace;
+      font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase;
+      background: #111; color: #fff; border-radius: 6px; line-height: 1;
+    }
+    .ph-pill--lg { padding: 10px 18px; font-size: 15px; }
+    .ph-pill--md { padding: 8px 14px; font-size: 12px; opacity: 0.85; }
+    .ph-pill--sm { padding: 6px 10px; font-size: 10px; opacity: 0.65; }
+    .ph-sep { font-size: 18px; color: #aaa; font-weight: 300; line-height: 1; }
   </style>
 </head>
 <body>
@@ -353,7 +360,7 @@
 
 <!-- HERO -->
 <section class="project-hero">
-  <p class="project-tag">Pet project · 2024</p>
+  <p class="project-tag">Pet project · 2025–2026</p>
   <div class="project-title">
     <span class="line1">Working</span>
     <span class="line2">horse</span>
@@ -365,7 +372,7 @@
     <div class="meta-divider"></div>
     <div class="meta-item"><span class="meta-label">Tool</span><span class="meta-value">Figma</span></div>
     <div class="meta-divider"></div>
-    <div class="meta-item"><span class="meta-label">Year</span><span class="meta-value">2024</span></div>
+    <div class="meta-item"><span class="meta-label">Year</span><span class="meta-value">2025–2026</span></div>
   </div>
   <div class="hero-image-wrap">
     <img src="wh-img/img-01.png" alt="Working Horse — browser tab manager" loading="eager">
@@ -434,7 +441,13 @@
     <p class="section-label">Onboarding</p>
     <div class="section-body">
       <h2>Do, don't read</h2>
-      <span class="principle-pill">Do → Show → Tell Principle</span>
+      <div class="principle-hierarchy">
+        <span class="ph-pill ph-pill--lg">Do</span>
+        <span class="ph-sep">&gt;</span>
+        <span class="ph-pill ph-pill--md">Show</span>
+        <span class="ph-sep">&gt;</span>
+        <span class="ph-pill ph-pill--sm">Tell</span>
+      </div>
       <p>Instead of walkthroughs or tooltip tours, the onboarding is embedded into the interface itself. Users learn by doing — selecting links, creating a folder, locking a working context — and the system confirms progress at each step.</p>
       <div class="how-list how-list--sessions">
         <div class="how-item">
@@ -567,6 +580,79 @@
     el.addEventListener('mouseenter', () => cursor.classList.add('link-hover'));
     el.addEventListener('mouseleave', () => cursor.classList.remove('link-hover'));
   });
+
+  // Manual scroll for ob-scroll-wrap (wheel + drag)
+  (function() {
+    const wrap = document.querySelector('.ob-scroll-wrap');
+    const outer = document.querySelector('.ob-track-outer');
+    if (!wrap || !outer) return;
+
+    let offset = 0;
+    let isHovering = false;
+    let isDragging = false;
+    let dragStartX = 0;
+    let dragStartOffset = 0;
+
+    // Get current animated position on hover start
+    function captureOffset() {
+      const style = getComputedStyle(outer);
+      const matrix = new DOMMatrixReadOnly(style.transform);
+      offset = matrix.m41;
+    }
+
+    wrap.addEventListener('mouseenter', () => {
+      isHovering = true;
+      captureOffset();
+      outer.style.animation = 'none';
+      outer.style.transform = `translateX(${offset}px)`;
+    });
+
+    wrap.addEventListener('mouseleave', () => {
+      isHovering = false;
+      if (!isDragging) {
+        outer.style.animation = '';
+        outer.style.transform = '';
+      }
+    });
+
+    // Wheel scroll
+    wrap.addEventListener('wheel', (e) => {
+      if (!isHovering) return;
+      e.preventDefault();
+      offset -= e.deltaY * 1.2;
+      // Clamp: allow scrolling half the track width
+      const maxScroll = -(outer.scrollWidth / 2);
+      if (offset < maxScroll) offset = maxScroll;
+      if (offset > 0) offset = 0;
+      outer.style.transform = `translateX(${offset}px)`;
+    }, { passive: false });
+
+    // Drag scroll
+    wrap.addEventListener('mousedown', (e) => {
+      isDragging = true;
+      dragStartX = e.clientX;
+      dragStartOffset = offset;
+      wrap.style.cursor = 'grabbing';
+      e.preventDefault();
+    });
+
+    document.addEventListener('mousemove', (e) => {
+      if (!isDragging) return;
+      const delta = e.clientX - dragStartX;
+      offset = dragStartOffset + delta;
+      const maxScroll = -(outer.scrollWidth / 2);
+      if (offset < maxScroll) offset = maxScroll;
+      if (offset > 0) offset = 0;
+      outer.style.transform = `translateX(${offset}px)`;
+    });
+
+    document.addEventListener('mouseup', () => {
+      if (isDragging) {
+        isDragging = false;
+        wrap.style.cursor = '';
+      }
+    });
+  })();
 </script>
 </body>
 </html>
