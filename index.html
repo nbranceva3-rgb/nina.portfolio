@@ -6,7 +6,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Nina Branceva — Portfolio</title>
+<title>Nina Briantseva — Portfolio</title>
 <style>
   @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;700;900&family=DM+Sans:wght@300;400&display=swap');
   *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
@@ -60,6 +60,16 @@
     letter-spacing: -0.02em;
     color: #000;
     text-transform: uppercase;
+  }
+  .hero-title .line0 {
+    display: block;
+    font-family: 'JetBrains Mono', monospace;
+    font-weight: 300;
+    font-size: clamp(80px, 11vw, 150px);
+    line-height: 1.0;
+    letter-spacing: -0.03em;
+    color: #000;
+    text-transform: lowercase;
   }
   .hero-title .line2 {
     display: block;
@@ -238,6 +248,7 @@
     /* Hero */
     .hero { min-height: 100svh; padding: 100px 20px 60px; align-items: flex-start; justify-content: flex-start; }
     .hero-tag { margin-bottom: 32px; font-size: 10px; }
+    .hero-title .line0,
     .hero-title .line1,
     .hero-title .line2 { font-size: clamp(48px, 13vw, 72px); }
     .hero-desc { font-size: 15px; margin-top: 36px; text-align: left; max-width: 100%; }
@@ -347,6 +358,7 @@
 
 
   <div class="hero-title">
+    <span class="line0">ux&amp;graphic</span>
     <span class="line1">DESIGN</span>
     <span class="line2">portfolio</span>
   </div>
