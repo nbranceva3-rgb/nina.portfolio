@@ -70,7 +70,7 @@
       .project-meta { flex-wrap: wrap; gap: 20px; }
       .meta-divider { display: none; }
       .insight-box { padding: 28px 20px; }
-      .hero-image-wrap { padding: 0; }
+      .hero-image-wrap { padding: 0; width: 100vw; max-width: none; margin-left: -20px; }
       .hero-image-wrap img { border-radius: 0; }
       .project-content { padding: 0 24px; }
       .content-section { grid-template-columns: 1fr; gap: 24px; }
@@ -156,13 +156,13 @@
         <p class="insight-label">Core Insight</p>
         <p>The pain is the point — but only when it's chosen. Users want to feel in control of their discomfort, not subjected to it by someone else's schedule.</p>
       </div>
-      <img src="wh-img/img-39.png" alt="Pleasant Pain — brand identity" style="width:50%; display:block; margin-top:32px; border-radius:4px;">
     </div>
   </div>
 
   <div class="content-section" data-scroll>
     <div style="position:sticky; top:100px;">
       <p class="section-label" style="position:static;">The Solution</p>
+      <img src="wh-img/img-39.png" alt="Pleasant Pain — brand identity" style="width:100%; display:block; margin-top:50px; border-radius:4px;">
     </div>
     <div class="section-body">
       <h2>A brand that earns its sweat</h2>
@@ -197,9 +197,9 @@
 
 <div class="project-content">
   <div class="mockups-section" data-scroll>
-    <img class="mockup-img" src="wh-img/img-40.png" alt="Pleasant Pain static pages" style="width:100%; margin-bottom:24px;">
+    <img class="mockup-img" src="wh-img/img-34.png" alt="Pleasant Pain brand identity" style="width:100%; margin-bottom:24px;">
     <div style="display:grid; grid-template-columns:1fr 1fr; gap:24px; margin-bottom:24px;">
-      <img class="mockup-img" src="wh-img/img-34.png" alt="Pleasant Pain brand identity">
+      <img class="mockup-img" src="wh-img/img-40.png" alt="Pleasant Pain static pages">
       <img class="mockup-img" src="wh-img/img-29.png" alt="Pleasant Pain homepage">
     </div>
     <div class="hifi-pair">
@@ -228,6 +228,36 @@
     });
   }, { threshold: 0.1 });
   sections.forEach(s => observer.observe(s));
+</script>
+
+<div id="lb-overlay" role="dialog" aria-modal="true">
+  <button id="lb-close" aria-label="Close">&#x2715;</button>
+  <button id="lb-prev" aria-label="Previous">&#x2039;</button>
+  <img id="lb-img" src="" alt="">
+  <button id="lb-next" aria-label="Next">&#x203A;</button>
+</div>
+<script>
+(function(){
+  var ov=document.getElementById('lb-overlay'),
+      li=document.getElementById('lb-img'),
+      cl=document.getElementById('lb-close'),
+      pv=document.getElementById('lb-prev'),
+      nx=document.getElementById('lb-next'),
+      imgs=[],cur=0;
+  function collect(){ imgs=Array.from(document.querySelectorAll('.lb-trigger')); }
+  function show(i){ collect();cur=i;li.src=imgs[cur].src;li.alt=imgs[cur].alt||'';ov.classList.add('lb-open');document.body.style.overflow='hidden';upd(); }
+  function hide(){ ov.classList.remove('lb-open');document.body.style.overflow='';li.src=''; }
+  function upd(){ pv.classList.toggle('lb-hidden',cur===0);nx.classList.toggle('lb-hidden',cur===imgs.length-1); }
+  document.querySelectorAll('.mockup-img,.hifi-img,.lofi-img,.hero-image-wrap img').forEach(function(img){ img.classList.add('lb-trigger');img.addEventListener('click',function(){ collect();show(imgs.indexOf(img)); }); });
+  cl.addEventListener('click',hide);
+  pv.addEventListener('click',function(){ if(cur>0){cur--;li.src=imgs[cur].src;li.alt=imgs[cur].alt||'';upd();} });
+  nx.addEventListener('click',function(){ if(cur<imgs.length-1){cur++;li.src=imgs[cur].src;li.alt=imgs[cur].alt||'';upd();} });
+  ov.addEventListener('click',function(e){ if(e.target===ov)hide(); });
+  document.addEventListener('keydown',function(e){ if(!ov.classList.contains('lb-open'))return; if(e.key==='Escape')hide(); if(e.key==='ArrowLeft'&&cur>0){cur--;li.src=imgs[cur].src;li.alt=imgs[cur].alt||'';upd();} if(e.key==='ArrowRight'&&cur<imgs.length-1){cur++;li.src=imgs[cur].src;li.alt=imgs[cur].alt||'';upd();} });
+  var tx=0;
+  ov.addEventListener('touchstart',function(e){ tx=e.touches[0].clientX; },{passive:true});
+  ov.addEventListener('touchend',function(e){ var dx=e.changedTouches[0].clientX-tx; if(Math.abs(dx)>50){ if(dx<0&&cur<imgs.length-1){cur++;li.src=imgs[cur].src;li.alt=imgs[cur].alt||'';upd();}else if(dx>0&&cur>0){cur--;li.src=imgs[cur].src;li.alt=imgs[cur].alt||'';upd();} } },{passive:true});
+})();
 </script>
 </body>
 </html>
