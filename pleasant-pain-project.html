@@ -51,6 +51,7 @@
     .mockups-label { font-size: 11px; letter-spacing: 0.22em; text-transform: uppercase; color: #bbb; min-width: 280px; }
     .mockups-header h2 { font-family: 'Bayon', sans-serif; font-size: clamp(36px, 4vw, 56px); line-height: 1.0; letter-spacing: -0.01em; text-transform: uppercase; color: #111; }
     .mockups-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 24px; }
+    .hifi-pair { display: flex; flex-direction: column; gap: 24px; }
     .mockups-grid .mockup-full { grid-column: 1 / -1; }
     .mockup-img { width: 100%; height: auto; display: block; border-radius: 4px; transition: transform 0.5s ease; }
     .mockup-img:hover { transform: scale(1.01); }
@@ -76,6 +77,8 @@
       .mockups-header { flex-direction: column; gap: 12px; }
       .mockups-label { min-width: auto; }
       .project-footer { padding: 48px 24px; flex-direction: column; gap: 24px; align-items: flex-start; }
+      .project-content { max-width: 360px; }
+      .hifi-pair { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
     }
   </style>
 </head>
@@ -183,13 +186,10 @@
       <img class="mockup-img" src="wh-img/img-40.png" alt="Pleasant Pain static pages">
       <img class="mockup-img" src="wh-img/img-29.png" alt="Pleasant Pain homepage">
     </div>
-    <img class="mockup-img" src="wh-img/img-32.png" alt="Pleasant Pain login screens" style="width:100%;">
-  </div>
-</div>
-
-<div class="project-content">
-  <div class="mockups-section" data-scroll style="padding-top:0; border-top:none;">
-    <img class="mockup-img" src="wh-img/img-41.png" alt="Pleasant Pain browser extension" style="width:100%;">
+    <div class="hifi-pair">
+      <img class="mockup-img" src="wh-img/img-32.png" alt="Pleasant Pain login screens" style="width:100%;">
+      <img class="mockup-img" src="wh-img/img-41.png" alt="Pleasant Pain browser extension" style="width:100%;">
+    </div>
   </div>
 </div>
 
