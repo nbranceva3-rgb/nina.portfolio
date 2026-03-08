@@ -9,6 +9,7 @@
   <link href="https://fonts.googleapis.com/css2?family=Bayon&family=JetBrains+Mono:wght@300;400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { overflow-x: hidden; }
     body { background: #f9f8f6; color: #111; font-family: 'DM Sans', sans-serif; font-weight: 300; overflow-x: hidden; cursor: none; }
     #cursor { position: fixed; width: 10px; height: 10px; background: #111; border-radius: 50%; pointer-events: none; z-index: 9999; transform: translate(-50%, -50%); transition: transform 0.15s ease, width 0.2s ease, height 0.2s ease; opacity: 0; }
     body:hover #cursor { opacity: 1; }
@@ -69,18 +70,32 @@
       .project-meta { flex-wrap: wrap; gap: 20px; }
       .meta-divider { display: none; }
       .insight-box { padding: 28px 20px; }
-      .hero-image-wrap { padding: 0 24px; }
+      .hero-image-wrap { padding: 0; }
+      .hero-image-wrap img { border-radius: 0; }
       .project-content { padding: 0 24px; }
       .content-section { grid-template-columns: 1fr; gap: 24px; }
       .section-label { position: static; }
       .content-section [style*="position:sticky"] { position: static !important; }
-      .mockups-grid { grid-template-columns: 1fr; }
+      .mockups-grid { grid-template-columns: repeat(2, 1fr); }
       .mockups-header { flex-direction: column; gap: 12px; }
       .mockups-label { min-width: auto; }
       .project-footer { padding: 48px 24px; flex-direction: column; gap: 24px; align-items: flex-start; }
-      .project-content { max-width: 360px; }
+      .project-content { max-width: 100%; }
       .hifi-pair { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
     }
+
+    /* LIGHTBOX */
+    #lb-overlay { display:none; position:fixed; inset:0; background:rgba(0,0,0,0.96); z-index:10000; align-items:center; justify-content:center; }
+    #lb-overlay.lb-open { display:flex; }
+    #lb-img { max-width:min(90vw,1200px); max-height:88vh; object-fit:contain; user-select:none; display:block; }
+    #lb-close { position:absolute; top:20px; right:24px; background:none; border:none; color:#fff; font-size:32px; cursor:pointer; line-height:1; opacity:0.7; transition:opacity 0.2s; padding:4px 8px; }
+    #lb-close:hover { opacity:1; }
+    #lb-prev, #lb-next { position:absolute; top:50%; transform:translateY(-50%); background:none; border:none; color:#fff; font-size:52px; cursor:pointer; padding:16px 20px; opacity:0.5; transition:opacity 0.2s; line-height:1; user-select:none; }
+    #lb-prev { left:0; }
+    #lb-next { right:0; }
+    #lb-prev:hover, #lb-next:hover { opacity:1; }
+    .lb-hidden { opacity:0 !important; pointer-events:none !important; }
+    .lb-trigger { cursor:zoom-in !important; }
   </style>
 </head>
 <body>
@@ -141,13 +156,13 @@
         <p class="insight-label">Core Insight</p>
         <p>The pain is the point — but only when it's chosen. Users want to feel in control of their discomfort, not subjected to it by someone else's schedule.</p>
       </div>
+      <img src="wh-img/img-39.png" alt="Pleasant Pain — brand identity" style="width:50%; display:block; margin-top:32px; border-radius:4px;">
     </div>
   </div>
 
   <div class="content-section" data-scroll>
     <div style="position:sticky; top:100px;">
       <p class="section-label" style="position:static;">The Solution</p>
-      <img src="wh-img/img-39.png" alt="Pleasant Pain — brand identity" style="width:100%; display:block; margin-top:50px; border-radius:4px;">
     </div>
     <div class="section-body">
       <h2>A brand that earns its sweat</h2>
@@ -182,9 +197,9 @@
 
 <div class="project-content">
   <div class="mockups-section" data-scroll>
-    <img class="mockup-img" src="wh-img/img-34.png" alt="Pleasant Pain brand identity" style="width:100%; margin-bottom:24px;">
+    <img class="mockup-img" src="wh-img/img-40.png" alt="Pleasant Pain static pages" style="width:100%; margin-bottom:24px;">
     <div style="display:grid; grid-template-columns:1fr 1fr; gap:24px; margin-bottom:24px;">
-      <img class="mockup-img" src="wh-img/img-40.png" alt="Pleasant Pain static pages">
+      <img class="mockup-img" src="wh-img/img-34.png" alt="Pleasant Pain brand identity">
       <img class="mockup-img" src="wh-img/img-29.png" alt="Pleasant Pain homepage">
     </div>
     <div class="hifi-pair">

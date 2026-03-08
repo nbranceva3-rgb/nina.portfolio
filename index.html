@@ -1,4 +1,7 @@
-<!DOCTYPE html>
+<!DOC
+  
+  
+  TYPE html>
 <html lang="en">
 <head>
 <meta charset="UTF-8">
@@ -7,6 +10,7 @@
 <style>
   @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;700;900&family=DM+Sans:wght@300;400&display=swap');
   *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+  html { overflow-x: hidden; }
   body { background: #f9f8f6; color: #111; font-family: 'DM Sans', sans-serif; font-weight: 300; overflow-x: hidden; cursor: none; }
   a, button, [role="button"] { cursor: pointer !important; }
   .cursor { width: 8px; height: 8px; background: #111; border-radius: 50%; position: fixed; pointer-events: none; z-index: 9999; transform: translate(-50%,-50%); }
@@ -511,6 +515,45 @@ const observer = new IntersectionObserver((entries) => {
 }, { rootMargin: '-45% 0px -45% 0px', threshold: 0 });
 
 caseBlocks.forEach(block => observer.observe(block));
-</script>
-</body>
-</html>
+</script><script>
+const cursor = document.getElementById('cursor');
+document.addEventListener('mousemove', e => {
+  cursor.style.left = e.clientX + 'px';
+  cursor.style.top = e.clientY + 'px';
+});
+
+window.addEventListener('scroll', () => {
+  document.getElementById('nav').classList.toggle('scrolled', window.scrollY > 10);
+});
+
+// Tabs
+document.querySelectorAll('.tab-btn').forEach(btn => {
+  btn.addEventListener('click', () => {
+    document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+    document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+    btn.classList.add('active');
+    document.getElementById('tab-' + btn.dataset.tab).classList.add('active');
+  });
+});
+
+// Cases: click nav → scroll page so that block appears opposite sticky left panel
+const navBtns = document.querySelectorAll('.case-nav-btn');
+const caseBlocks = document.querySelectorAll('.case-block');
+const navEl = document.getElementById('nav');
+
+navBtns.forEach(btn => {
+  btn.addEventListener('click', () => {
+    const target = document.getElementById(btn.dataset.target);
+    if (!target) return;
+    const navH = navEl.offsetHeight;
+    const targetTop = target.getBoundingClientRect().top + window.scrollY - navH;
+    window.scrollTo({ top: targetTop, behavior: 'smooth' });
+  });
+});
+
+// Scroll → highlight matching nav item
+// Use the middle of the sticky left panel as reference point
+const observer = new IntersectionObserver((entries) => {
+  entries.forEach(entry => {
+    if (entry.isIntersecting) {
+      navBtns.forEach(btn =>
