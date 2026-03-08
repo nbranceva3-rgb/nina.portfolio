@@ -1,7 +1,4 @@
-<!DOC
-  
-  
-  TYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="UTF-8">
@@ -332,7 +329,7 @@
 </nav>
 
 <section class="hero" style="position:relative;">
-  <div style="position:absolute;inset:0;background:url('wh-img/img-42.png') center/cover no-repeat;z-index:0;"></div>
+  <div style="position:absolute;inset:0;background:url('wh-img/img-44.png') center/cover no-repeat;z-index:0;"></div>
 
   <!-- 3D Object 1: right side, overlapping O -->
   <div class="hero-obj hero-obj-1" style="overflow:visible;width:700px;height:700px;">
@@ -514,45 +511,6 @@ const observer = new IntersectionObserver((entries) => {
 }, { rootMargin: '-45% 0px -45% 0px', threshold: 0 });
 
 caseBlocks.forEach(block => observer.observe(block));
-</script><script>
-const cursor = document.getElementById('cursor');
-document.addEventListener('mousemove', e => {
-  cursor.style.left = e.clientX + 'px';
-  cursor.style.top = e.clientY + 'px';
-});
-
-window.addEventListener('scroll', () => {
-  document.getElementById('nav').classList.toggle('scrolled', window.scrollY > 10);
-});
-
-// Tabs
-document.querySelectorAll('.tab-btn').forEach(btn => {
-  btn.addEventListener('click', () => {
-    document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
-    document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
-    btn.classList.add('active');
-    document.getElementById('tab-' + btn.dataset.tab).classList.add('active');
-  });
-});
-
-// Cases: click nav → scroll page so that block appears opposite sticky left panel
-const navBtns = document.querySelectorAll('.case-nav-btn');
-const caseBlocks = document.querySelectorAll('.case-block');
-const navEl = document.getElementById('nav');
-
-navBtns.forEach(btn => {
-  btn.addEventListener('click', () => {
-    const target = document.getElementById(btn.dataset.target);
-    if (!target) return;
-    const navH = navEl.offsetHeight;
-    const targetTop = target.getBoundingClientRect().top + window.scrollY - navH;
-    window.scrollTo({ top: targetTop, behavior: 'smooth' });
-  });
-});
-
-// Scroll → highlight matching nav item
-// Use the middle of the sticky left panel as reference point
-const observer = new IntersectionObserver((entries) => {
-  entries.forEach(entry => {
-    if (entry.isIntersecting) {
-      navBtns.forEach(btn =>
+</script>
+</body>
+</html>
