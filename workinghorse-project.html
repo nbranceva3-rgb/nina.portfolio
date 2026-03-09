@@ -334,6 +334,19 @@
       text-align: center;
     }
 
+
+    .ob-nav {
+      position: absolute; top: 50%; transform: translateY(-50%);
+      z-index: 200; width: 40px; height: 40px; border-radius: 50%;
+      border: 1px solid rgba(0,0,0,0.1); background: rgba(249,248,246,0.95);
+      display: flex; align-items: center; justify-content: center;
+      cursor: pointer; transition: background 0.2s, box-shadow 0.2s, opacity 0.25s;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.07); padding: 0;
+    }
+    .ob-nav:hover { background: #fff; box-shadow: 0 4px 16px rgba(0,0,0,0.13); }
+    .ob-nav--prev { left: 20px; }
+    .ob-nav--next { right: 20px; }
+    .ob-nav.ob-hidden { opacity: 0; pointer-events: none; }
     .principle-pill { display: none; }
     .principle-hierarchy {
       display: inline-flex; align-items: center; gap: 10px;
@@ -489,6 +502,12 @@
 
 <!-- ONBOARDING SCROLL STRIP — full width -->
 <div class="ob-scroll-wrap">
+  <button class="ob-nav ob-nav--prev ob-hidden" aria-label="Previous">
+    <svg width="14" height="14" viewBox="0 0 16 16" fill="none"><path d="M10 3L5 8L10 13" stroke="#111" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+  </button>
+  <button class="ob-nav ob-nav--next" aria-label="Next">
+    <svg width="14" height="14" viewBox="0 0 16 16" fill="none"><path d="M6 3L11 8L6 13" stroke="#111" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+  </button>
   <div class="ob-track-outer">
     <div class="ob-track">
       <div class="ob-item"><img class="ob-img" loading="lazy" src="wh-img/img-02.png" alt="1/6 — Import your tabs"><span class="ob-label">1/6 — Import your tabs</span></div>
@@ -601,77 +620,109 @@
     el.addEventListener('mouseleave', () => cursor.classList.remove('link-hover'));
   });
 
-  // Manual scroll for ob-scroll-wrap (wheel + drag)
+  // Scroll strip: drag, touch swipe, arrow buttons
   (function() {
     const wrap = document.querySelector('.ob-scroll-wrap');
     const outer = document.querySelector('.ob-track-outer');
+    const btnPrev = wrap ? wrap.querySelector('.ob-nav--prev') : null;
+    const btnNext = wrap ? wrap.querySelector('.ob-nav--next') : null;
     if (!wrap || !outer) return;
 
+    const STEP = 592; // one item (560px) + gap (16px) + small extra
     let offset = 0;
-    let isHovering = false;
+    let isManual = false;
     let isDragging = false;
     let dragStartX = 0;
     let dragStartOffset = 0;
+    let touchStartX = 0;
+    let touchStartOffset = 0;
 
-    // Get current animated position on hover start
+    function maxScroll() { return -(outer.scrollWidth / 2); }
+
+    function clamp(v) { return Math.max(maxScroll(), Math.min(0, v)); }
+
+    function applyOffset(v, animate) {
+      offset = clamp(v);
+      outer.style.transition = animate ? 'transform 0.35s cubic-bezier(.4,0,.2,1)' : 'none';
+      outer.style.transform = `translateX(${offset}px)`;
+      updateBtns();
+    }
+
+    function updateBtns() {
+      if (btnPrev) btnPrev.classList.toggle('ob-hidden', offset >= 0);
+      if (btnNext) btnNext.classList.toggle('ob-hidden', offset <= maxScroll());
+    }
+
     function captureOffset() {
       const style = getComputedStyle(outer);
       const matrix = new DOMMatrixReadOnly(style.transform);
       offset = matrix.m41;
     }
 
-    wrap.addEventListener('mouseenter', () => {
-      isHovering = true;
-      captureOffset();
-      outer.style.animation = 'none';
-      outer.style.transform = `translateX(${offset}px)`;
+    function startManual() {
+      if (!isManual) {
+        captureOffset();
+        isManual = true;
+        outer.style.animation = 'none';
+        outer.style.transition = 'none';
+        outer.style.transform = `translateX(${offset}px)`;
+        updateBtns();
+      }
+    }
+
+    // Arrow buttons
+    if (btnPrev) btnPrev.addEventListener('click', () => {
+      startManual();
+      applyOffset(offset + STEP, true);
+    });
+    if (btnNext) btnNext.addEventListener('click', () => {
+      startManual();
+      applyOffset(offset - STEP, true);
     });
 
+    // Mouse hover (pause auto-scroll, enable manual)
+    wrap.addEventListener('mouseenter', () => { startManual(); });
     wrap.addEventListener('mouseleave', () => {
-      isHovering = false;
       if (!isDragging) {
+        // Resume auto-scroll from current position
         outer.style.animation = '';
         outer.style.transform = '';
+        isManual = false;
       }
     });
 
-    // Wheel scroll
-    wrap.addEventListener('wheel', (e) => {
-      if (!isHovering) return;
-      e.preventDefault();
-      offset -= e.deltaY * 1.2;
-      // Clamp: allow scrolling half the track width
-      const maxScroll = -(outer.scrollWidth / 2);
-      if (offset < maxScroll) offset = maxScroll;
-      if (offset > 0) offset = 0;
-      outer.style.transform = `translateX(${offset}px)`;
-    }, { passive: false });
-
-    // Drag scroll
+    // Mouse drag
     wrap.addEventListener('mousedown', (e) => {
+      startManual();
       isDragging = true;
       dragStartX = e.clientX;
       dragStartOffset = offset;
+      outer.style.transition = 'none';
       wrap.style.cursor = 'grabbing';
       e.preventDefault();
     });
-
     document.addEventListener('mousemove', (e) => {
       if (!isDragging) return;
-      const delta = e.clientX - dragStartX;
-      offset = dragStartOffset + delta;
-      const maxScroll = -(outer.scrollWidth / 2);
-      if (offset < maxScroll) offset = maxScroll;
-      if (offset > 0) offset = 0;
-      outer.style.transform = `translateX(${offset}px)`;
+      applyOffset(dragStartOffset + (e.clientX - dragStartX), false);
+    });
+    document.addEventListener('mouseup', () => {
+      if (isDragging) { isDragging = false; wrap.style.cursor = ''; }
     });
 
-    document.addEventListener('mouseup', () => {
-      if (isDragging) {
-        isDragging = false;
-        wrap.style.cursor = '';
-      }
-    });
+    // Touch swipe
+    wrap.addEventListener('touchstart', (e) => {
+      startManual();
+      touchStartX = e.touches[0].clientX;
+      touchStartOffset = offset;
+      outer.style.transition = 'none';
+    }, { passive: true });
+    wrap.addEventListener('touchmove', (e) => {
+      const dx = e.touches[0].clientX - touchStartX;
+      applyOffset(touchStartOffset + dx, false);
+    }, { passive: true });
+    wrap.addEventListener('touchend', () => {});
+
+    updateBtns();
   })();
 </script>
 
