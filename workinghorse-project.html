@@ -271,53 +271,28 @@
       .section-label { position: static; }
       .hifi-grid { grid-template-columns: repeat(2, 1fr); }
       .lofi-grid { grid-template-columns: repeat(2, 1fr); }
+      .ob-tile-grid { grid-template-columns: repeat(2, 1fr); }
+      .ob-tile-wrap { padding: 0 16px 32px; }
       .screens-header { flex-direction: column; gap: 12px; }
       .screens-label { min-width: auto; }
       .project-footer { padding: 48px 24px; flex-direction: column; gap: 24px; align-items: flex-start; }
     }
 
-    /* ONBOARDING SCROLL STRIP */
-    @keyframes ob-scroll {
-      0%   { transform: translateX(0); }
-      100% { transform: translateX(-50%); }
-    }
-    .ob-scroll-wrap {
+    /* ONBOARDING TILE GRID */
+    .ob-tile-wrap {
       width: 100%;
-      overflow: visible;
-      margin: -60px 0 48px;
-      padding: 60px 0;
-      position: relative;
-      z-index: 50;
+      padding: 0 48px 48px;
     }
-    .ob-track-outer {
-      display: flex;
-      width: max-content;
-      animation: ob-scroll 40s linear infinite;
-      will-change: transform;
-    }
-    .ob-track {
-      display: flex;
+    .ob-tile-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
       gap: 16px;
-      padding-right: 16px;
     }
     .ob-item {
       display: flex;
       flex-direction: column;
       gap: 10px;
-      width: 560px;
-      flex-shrink: 0;
-      position: relative;
-      z-index: 1;
-      transition: transform 0.35s ease, z-index 0s;
       cursor: pointer;
-    }
-    .ob-item:hover {
-      transform: scale(1.5);
-      z-index: 100;
-      transition: transform 0.35s ease;
-    }
-    .ob-scroll-wrap:has(.ob-item:hover) .ob-track-outer {
-      animation-play-state: paused;
     }
     .ob-img {
       width: 100%;
@@ -325,7 +300,9 @@
       display: block;
       border-radius: 6px;
       border: 1px solid #e8e8e8;
+      transition: opacity 0.2s;
     }
+    .ob-item:hover .ob-img { opacity: 0.85; }
     .ob-label {
       font-family: 'JetBrains Mono', monospace;
       font-size: 10px;
@@ -333,20 +310,6 @@
       color: #bbb;
       text-align: center;
     }
-
-
-    .ob-nav {
-      position: absolute; top: 50%; transform: translateY(-50%);
-      z-index: 200; width: 40px; height: 40px; border-radius: 50%;
-      border: 1px solid rgba(0,0,0,0.1); background: rgba(249,248,246,0.95);
-      display: flex; align-items: center; justify-content: center;
-      cursor: pointer; transition: background 0.2s, box-shadow 0.2s, opacity 0.25s;
-      box-shadow: 0 2px 8px rgba(0,0,0,0.07); padding: 0;
-    }
-    .ob-nav:hover { background: #fff; box-shadow: 0 4px 16px rgba(0,0,0,0.13); }
-    .ob-nav--prev { left: 20px; }
-    .ob-nav--next { right: 20px; }
-    .ob-nav.ob-hidden { opacity: 0; pointer-events: none; }
     .principle-pill { display: none; }
     .principle-hierarchy {
       display: inline-flex; align-items: center; gap: 10px;
@@ -501,40 +464,32 @@
 </div>
 
 <!-- ONBOARDING SCROLL STRIP — full width -->
-<div class="ob-scroll-wrap">
-  <button class="ob-nav ob-nav--prev ob-hidden" aria-label="Previous">
-    <svg width="14" height="14" viewBox="0 0 16 16" fill="none"><path d="M10 3L5 8L10 13" stroke="#111" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
-  </button>
-  <button class="ob-nav ob-nav--next" aria-label="Next">
-    <svg width="14" height="14" viewBox="0 0 16 16" fill="none"><path d="M6 3L11 8L6 13" stroke="#111" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
-  </button>
-  <div class="ob-track-outer">
-    <div class="ob-track">
-      <div class="ob-item"><img class="ob-img" loading="lazy" src="wh-img/img-02.png" alt="1/6 — Import your tabs"><span class="ob-label">1/6 — Import your tabs</span></div>
-      <div class="ob-item"><img class="ob-img" loading="lazy" src="wh-img/img-03.png" alt="2/6 — Create first folder"><span class="ob-label">2/6 — Create first folder</span></div>
-      <div class="ob-item"><img class="ob-img" loading="lazy" src="wh-img/img-04.png" alt="2/6 — Select the links"><span class="ob-label">2/6 — Select the links</span></div>
-      <div class="ob-item"><img class="ob-img" loading="lazy" src="wh-img/img-05.png" alt="3/6 — Add to folder"><span class="ob-label">3/6 — Add to folder</span></div>
-      <div class="ob-item"><img class="ob-img" loading="lazy" src="wh-img/img-06.png" alt="4/6 — Name the folder"><span class="ob-label">4/6 — Name the folder</span></div>
-      <div class="ob-item"><img class="ob-img" loading="lazy" src="wh-img/img-07.png" alt="4/6 — Name filled in"><span class="ob-label">4/6 — Name filled in</span></div>
-      <div class="ob-item"><img class="ob-img" loading="lazy" src="wh-img/img-08.png" alt="5/6 — See how it works"><span class="ob-label">5/6 — See how it works</span></div>
-      <div class="ob-item"><img class="ob-img" loading="lazy" src="wh-img/img-09.png" alt="6/6 — Open your folders"><span class="ob-label">6/6 — Open your folders</span></div>
-      <div class="ob-item"><img class="ob-img" loading="lazy" src="wh-img/img-10.png" alt="Done — Congratulations"><span class="ob-label">Done — Congratulations</span></div>
-    </div>
-    <div class="ob-track" aria-hidden="true">
-      <div class="ob-item"><img class="ob-img" loading="lazy" src="wh-img/img-02.png" alt=""><span class="ob-label">1/6 — Import your tabs</span></div>
-      <div class="ob-item"><img class="ob-img" loading="lazy" src="wh-img/img-03.png" alt=""><span class="ob-label">2/6 — Create first folder</span></div>
-      <div class="ob-item"><img class="ob-img" loading="lazy" src="wh-img/img-04.png" alt=""><span class="ob-label">2/6 — Select the links</span></div>
-      <div class="ob-item"><img class="ob-img" loading="lazy" src="wh-img/img-05.png" alt=""><span class="ob-label">3/6 — Add to folder</span></div>
-      <div class="ob-item"><img class="ob-img" loading="lazy" src="wh-img/img-06.png" alt=""><span class="ob-label">4/6 — Name the folder</span></div>
-      <div class="ob-item"><img class="ob-img" loading="lazy" src="wh-img/img-07.png" alt=""><span class="ob-label">4/6 — Name filled in</span></div>
-      <div class="ob-item"><img class="ob-img" loading="lazy" src="wh-img/img-08.png" alt=""><span class="ob-label">5/6 — See how it works</span></div>
-      <div class="ob-item"><img class="ob-img" loading="lazy" src="wh-img/img-09.png" alt=""><span class="ob-label">6/6 — Open your folders</span></div>
-      <div class="ob-item"><img class="ob-img" loading="lazy" src="wh-img/img-10.png" alt=""><span class="ob-label">Done — Congratulations</span></div>
-    </div>
+<div class="ob-tile-wrap">
+  <div class="ob-tile-grid">
+    <div class="ob-item"><img class="ob-img" loading="lazy" src="wh-img/img-02.png" alt="1/6 — Import your tabs"><span class="ob-label">1/6 — Import your tabs</span></div>
+    <div class="ob-item"><img class="ob-img" loading="lazy" src="wh-img/img-03.png" alt="2/6 — Create first folder"><span class="ob-label">2/6 — Create first folder</span></div>
+    <div class="ob-item"><img class="ob-img" loading="lazy" src="wh-img/img-04.png" alt="2/6 — Select the links"><span class="ob-label">2/6 — Select the links</span></div>
+    <div class="ob-item"><img class="ob-img" loading="lazy" src="wh-img/img-05.png" alt="3/6 — Add to folder"><span class="ob-label">3/6 — Add to folder</span></div>
+    <div class="ob-item"><img class="ob-img" loading="lazy" src="wh-img/img-06.png" alt="4/6 — Name the folder"><span class="ob-label">4/6 — Name the folder</span></div>
+    <div class="ob-item"><img class="ob-img" loading="lazy" src="wh-img/img-07.png" alt="4/6 — Name filled in"><span class="ob-label">4/6 — Name filled in</span></div>
+    <div class="ob-item"><img class="ob-img" loading="lazy" src="wh-img/img-08.png" alt="5/6 — See how it works"><span class="ob-label">5/6 — See how it works</span></div>
+    <div class="ob-item"><img class="ob-img" loading="lazy" src="wh-img/img-09.png" alt="6/6 — Open your folders"><span class="ob-label">6/6 — Open your folders</span></div>
+    <div class="ob-item"><img class="ob-img" loading="lazy" src="wh-img/img-10.png" alt="Done — Congratulations"><span class="ob-label">Done — Congratulations</span></div>
   </div>
 </div>
 
 <div class="project-content">
+
+  <!-- COMPETITOR ANALYSIS -->
+  <div class="content-section" data-scroll>
+    <p class="section-label">Competitor analysis</p>
+    <div class="section-body">
+      <h2>Where others fall short</h2>
+      <p>Before starting work, a competitor analysis was conducted. We identified strengths to adapt into our product and weaknesses that, when solved, would become our competitive advantage.</p>
+      <p>The most popular tab managers share a common problem — they try to do too much. Workona, for example, includes Resources, Notes, Tasks, and Chat alongside its core function. All of this makes the product complex and overwhelming, especially for users who aren't used to browser extensions and simply don't need the extra features.</p>
+      <p>Our goal: build a product that is as <strong>simple to use as possible</strong> — one that does the core job well and gets out of the way.</p>
+    </div>
+  </div>
 
   <!-- RESEARCH -->
   <div class="content-section" data-scroll>
@@ -557,19 +512,6 @@
 
 </div>
 
-<!-- HI-FI SCREENS -->
-<div class="project-content">
-  <div class="screens-section" data-scroll>
-    <div class="screens-header">
-      <span class="screens-label">Final designs</span>
-      <h2>The screens</h2>
-    </div>
-    <div class="hifi-grid">
-      <img class="hifi-img" loading="lazy" src="wh-img/img-11.png" alt="Working Horse screen 1"><img class="hifi-img" loading="lazy" src="wh-img/img-14.png" alt="Working Horse screen 4"><img class="hifi-img" loading="lazy" src="wh-img/img-15.png" alt="Working Horse screen 5"><img class="hifi-img" loading="lazy" src="wh-img/img-13.png" alt="Working Horse screen 3"><img class="hifi-img" loading="lazy" src="wh-img/img-12.png" alt="Working Horse screen 2"><img class="hifi-img" loading="lazy" src="wh-img/img-17.png" alt="Working Horse screen 7"><img class="hifi-img" loading="lazy" src="wh-img/img-16.png" alt="Working Horse screen 6"><img class="hifi-img" loading="lazy" src="wh-img/img-26.png" alt="Working Horse screen 8">
-    </div>
-  </div>
-</div>
-
 <!-- LO-FI PROTOTYPES -->
 <div class="project-content">
   <div class="screens-section" data-scroll>
@@ -584,7 +526,20 @@
       <img class="lofi-img" loading="lazy" src="wh-img/img-22.png" alt="Plans — pricing">
       <img class="lofi-img" loading="lazy" src="wh-img/img-23.png" alt="Payment screen">
       <img class="lofi-img" loading="lazy" src="wh-img/img-18.png" alt="Working Horse lo-fi — success screen">
-      </div>
+    </div>
+  </div>
+</div>
+
+<!-- HI-FI SCREENS -->
+<div class="project-content">
+  <div class="screens-section" data-scroll>
+    <div class="screens-header">
+      <span class="screens-label">Final designs</span>
+      <h2>The screens</h2>
+    </div>
+    <div class="hifi-grid">
+      <img class="hifi-img" loading="lazy" src="wh-img/img-11.png" alt="Working Horse screen 1"><img class="hifi-img" loading="lazy" src="wh-img/img-14.png" alt="Working Horse screen 4"><img class="hifi-img" loading="lazy" src="wh-img/img-15.png" alt="Working Horse screen 5"><img class="hifi-img" loading="lazy" src="wh-img/img-13.png" alt="Working Horse screen 3"><img class="hifi-img" loading="lazy" src="wh-img/img-12.png" alt="Working Horse screen 2"><img class="hifi-img" loading="lazy" src="wh-img/img-17.png" alt="Working Horse screen 7"><img class="hifi-img" loading="lazy" src="wh-img/img-16.png" alt="Working Horse screen 6"><img class="hifi-img" loading="lazy" src="wh-img/img-26.png" alt="Working Horse screen 8">
+    </div>
   </div>
 </div>
 
@@ -622,109 +577,7 @@
 
   // Scroll strip: drag, touch swipe, arrow buttons
   (function() {
-    const wrap = document.querySelector('.ob-scroll-wrap');
-    const outer = document.querySelector('.ob-track-outer');
-    const btnPrev = wrap ? wrap.querySelector('.ob-nav--prev') : null;
-    const btnNext = wrap ? wrap.querySelector('.ob-nav--next') : null;
-    if (!wrap || !outer) return;
 
-    const STEP = 592; // one item (560px) + gap (16px) + small extra
-    let offset = 0;
-    let isManual = false;
-    let isDragging = false;
-    let dragStartX = 0;
-    let dragStartOffset = 0;
-    let touchStartX = 0;
-    let touchStartOffset = 0;
-
-    function maxScroll() { return -(outer.scrollWidth / 2); }
-
-    function clamp(v) { return Math.max(maxScroll(), Math.min(0, v)); }
-
-    function applyOffset(v, animate) {
-      offset = clamp(v);
-      outer.style.transition = animate ? 'transform 0.35s cubic-bezier(.4,0,.2,1)' : 'none';
-      outer.style.transform = `translateX(${offset}px)`;
-      updateBtns();
-    }
-
-    function updateBtns() {
-      if (btnPrev) btnPrev.classList.toggle('ob-hidden', offset >= 0);
-      if (btnNext) btnNext.classList.toggle('ob-hidden', offset <= maxScroll());
-    }
-
-    function captureOffset() {
-      const style = getComputedStyle(outer);
-      const matrix = new DOMMatrixReadOnly(style.transform);
-      offset = matrix.m41;
-    }
-
-    function startManual() {
-      if (!isManual) {
-        captureOffset();
-        isManual = true;
-        outer.style.animation = 'none';
-        outer.style.transition = 'none';
-        outer.style.transform = `translateX(${offset}px)`;
-        updateBtns();
-      }
-    }
-
-    // Arrow buttons
-    if (btnPrev) btnPrev.addEventListener('click', () => {
-      startManual();
-      applyOffset(offset + STEP, true);
-    });
-    if (btnNext) btnNext.addEventListener('click', () => {
-      startManual();
-      applyOffset(offset - STEP, true);
-    });
-
-    // Mouse hover (pause auto-scroll, enable manual)
-    wrap.addEventListener('mouseenter', () => { startManual(); });
-    wrap.addEventListener('mouseleave', () => {
-      if (!isDragging) {
-        // Resume auto-scroll from current position
-        outer.style.animation = '';
-        outer.style.transform = '';
-        isManual = false;
-      }
-    });
-
-    // Mouse drag
-    wrap.addEventListener('mousedown', (e) => {
-      startManual();
-      isDragging = true;
-      dragStartX = e.clientX;
-      dragStartOffset = offset;
-      outer.style.transition = 'none';
-      wrap.style.cursor = 'grabbing';
-      e.preventDefault();
-    });
-    document.addEventListener('mousemove', (e) => {
-      if (!isDragging) return;
-      applyOffset(dragStartOffset + (e.clientX - dragStartX), false);
-    });
-    document.addEventListener('mouseup', () => {
-      if (isDragging) { isDragging = false; wrap.style.cursor = ''; }
-    });
-
-    // Touch swipe
-    wrap.addEventListener('touchstart', (e) => {
-      startManual();
-      touchStartX = e.touches[0].clientX;
-      touchStartOffset = offset;
-      outer.style.transition = 'none';
-    }, { passive: true });
-    wrap.addEventListener('touchmove', (e) => {
-      const dx = e.touches[0].clientX - touchStartX;
-      applyOffset(touchStartOffset + dx, false);
-    }, { passive: true });
-    wrap.addEventListener('touchend', () => {});
-
-    updateBtns();
-  })();
-</script>
 
 <div id="lb-overlay" role="dialog" aria-modal="true">
   <button id="lb-close" aria-label="Close">&#x2715;</button>
