@@ -100,7 +100,7 @@
     display: block;
     font-family: 'Bayon', sans-serif;
     font-weight: 400;
-    font-size: clamp(72px, 13vw, 190px);
+    font-size: clamp(88px, 17vw, 240px);
     line-height: 0.92;
     letter-spacing: -0.01em;
     color: #fff;
@@ -113,7 +113,7 @@
     display: block;
     font-family: 'JetBrains Mono', monospace;
     font-weight: 300;
-    font-size: clamp(72px, 13vw, 190px);
+    font-size: clamp(44px, 8vw, 120px);
     line-height: 0.92;
     letter-spacing: -0.025em;
     color: #fff;
@@ -536,6 +536,36 @@
   }
   nav.classList.add('on-hero');
   window.addEventListener('scroll', updateNav, {passive: true});
+})();
+
+// ── Match DESIGN / portfolio to equal width ───────────────────────────────
+(function() {
+  function matchHeroWidths() {
+    var l1 = document.getElementById('heroLine1');
+    var l2 = document.getElementById('heroLine2');
+    if (!l1 || !l2) return;
+    function probe(el) {
+      var t = el.cloneNode(true);
+      t.style.cssText = 'position:fixed;top:-9999px;left:-9999px;visibility:hidden;'
+        + 'transform:none;opacity:1;white-space:nowrap;'
+        + 'font-size:' + getComputedStyle(el).fontSize + ';'
+        + 'font-family:' + getComputedStyle(el).fontFamily + ';'
+        + 'letter-spacing:' + getComputedStyle(el).letterSpacing + ';';
+      document.body.appendChild(t);
+      var w = t.getBoundingClientRect().width;
+      document.body.removeChild(t);
+      return w;
+    }
+    var w1 = probe(l1), w2 = probe(l2);
+    if (w1 > 0 && w2 > 0) {
+      l2.style.fontSize = (parseFloat(getComputedStyle(l2).fontSize) * (w1 / w2)) + 'px';
+    }
+  }
+  var ran = false;
+  function once() { if (!ran) { ran = true; matchHeroWidths(); } }
+  if (document.fonts && document.fonts.ready) { document.fonts.ready.then(once); }
+  window.addEventListener('load', once);
+  window.addEventListener('resize', matchHeroWidths);
 })();
 
 const cursor = document.getElementById('cursor');
