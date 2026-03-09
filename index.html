@@ -266,16 +266,31 @@
     body { cursor: auto; }
     .cursor { display: none; }
 
-    /* Nav */
-    nav { padding: 16px 20px; }
+    /* Nav — always solid on mobile, never transparent */
+    nav { padding: 16px 20px; background: #1d1f24 !important; border-bottom-color: rgba(249,248,246,0.1) !important; }
+    nav.on-hero { background: #1d1f24 !important; }
     .nav-links { gap: 18px; }
     .nav-links a { font-size: 11px; letter-spacing: 0.1em; }
 
-    /* Hero */
-    .hero { height: 100svh; }
+    /* Hero — stack side blocks above/below center text */
+    .hero { height: 100svh; flex-direction: column; justify-content: center; gap: 0; }
+    .hero-text-center { order: 2; }
     .hero-line1, .hero-line2 { font-size: clamp(52px, 14vw, 90px); }
-    .hero-left { display: none; }
-    .hero-right { display: none; }
+
+    .hero-left, .hero-right {
+      display: block;
+      position: static;
+      transform: none;
+      width: 100%;
+      text-align: center;
+      opacity: 0;
+      transition: opacity 0.6s ease;
+      padding: 0 24px;
+    }
+    .hero-left.visible, .hero-right.visible { opacity: 1; }
+    .hero-left { order: 1; margin-bottom: 24px; }
+    .hero-right { order: 3; margin-top: 24px; }
+    .hero-side-text { font-size: 12px; line-height: 1.6; }
 
     /* Work section */
     .work { grid-template-columns: 1fr; }
@@ -287,7 +302,8 @@
     .case-nav-list { flex-direction: column; gap: 0; }
     .case-nav-btn { font-size: 18px; padding: 6px 0; opacity: 0.35; }
 
-    /* Case blocks */
+    /* Case blocks — full width, no side padding */
+    .work-right { padding-right: 0; }
     .case-block { aspect-ratio: 4/3; }
     .case-block-label { padding: 28px 20px 20px; }
     .case-block-name { font-size: 20px; }
