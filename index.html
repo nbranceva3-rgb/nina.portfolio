@@ -244,9 +244,17 @@
     .hero-title .line2 { font-size: clamp(48px, 13vw, 72px); }
     .hero-desc { font-size: 15px; margin-top: 36px; text-align: left; max-width: 100%; }
     .hero-cta { margin-top: 28px; }
-    .hero-obj-1 { width: 120px; height: 120px; top: -10px; left: -15px; transform: none; }
+    .hero-obj-1 { display: none; }
     .hero-obj-2 { display: none; }
-    .hero-obj-3 { display: none; }
+    .hero-obj-3 {
+      display: block !important;
+      width: 200px !important; height: 200px !important;
+      position: absolute !important;
+      top: auto !important; bottom: 0 !important;
+      left: 50% !important;
+      transform: translateX(-50%) !important;
+      z-index: 5;
+    }
 
     /* Work section */
     .work { grid-template-columns: 1fr; }
