@@ -162,7 +162,7 @@
     .mockups-section.visible { opacity: 1; transform: translateY(0); }
     .mockups-header { display: flex; align-items: baseline; gap: 40px; margin-bottom: 40px; }
     .proto-btn {
-      display: inline-block;
+      display: block; width: fit-content; margin-left: auto; margin-right: auto;
       margin-bottom: 56px;
       padding: 14px 36px;
       border: 1.5px solid #1d1f24;
@@ -183,7 +183,7 @@
       font-size: clamp(36px, 4vw, 56px); line-height: 1.0;
       letter-spacing: -0.01em; text-transform: uppercase; color: #111;
     }
-    .mockups-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 24px; }
+    .mockups-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 24px; max-width: 680px; margin: 0 auto; }
     .mockups-grid .mockup-full { grid-column: 1 / -1; }
 
     /* Phone images — bg already removed, just display cleanly */
@@ -264,7 +264,7 @@
       .problem-image { height: 320px; }
       .content-section { grid-template-columns: 1fr; gap: 24px; }
       .section-label { position: static; }
-      .mockups-grid { grid-template-columns: 1fr; }
+      .mockups-grid { grid-template-columns: 1fr; max-width: none; }
       .mockups-header { flex-direction: column; gap: 12px; }
       .mockups-label { min-width: auto; }
       .project-footer { padding: 48px 24px; flex-direction: column; gap: 24px; align-items: flex-start; }
