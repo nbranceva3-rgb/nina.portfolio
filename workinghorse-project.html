@@ -100,10 +100,7 @@
       padding: 100px 0 48px; border-top: 1px solid #e8e8e8;
       display: grid; grid-template-columns: 280px 1fr;
       gap: 80px; align-items: start;
-      opacity: 0; transform: translateY(30px);
-      transition: opacity 0.7s ease, transform 0.7s ease;
     }
-    .content-section.visible { opacity: 1; transform: translateY(0); }
     .section-label {
       font-size: 11px; letter-spacing: 0.22em; text-transform: uppercase;
       color: #bbb; padding-top: 6px; position: sticky; top: 100px;
@@ -182,10 +179,7 @@
     /* SCREENS SECTION (shared styles) */
     .screens-section {
       padding: 100px 0; border-top: 1px solid #e8e8e8;
-      opacity: 0; transform: translateY(30px);
-      transition: opacity 0.7s ease, transform 0.7s ease;
     }
-    .screens-section.visible { opacity: 1; transform: translateY(0); }
     .screens-header { display: flex; align-items: baseline; gap: 40px; margin-bottom: 48px; }
     .screens-label {
       font-size: 11px; letter-spacing: 0.22em; text-transform: uppercase;
@@ -562,15 +556,7 @@
     cursor.style.top = e.clientY + 'px';
     cursor.style.opacity = '1';
   });
-  const sections = document.querySelectorAll('[data-scroll]');
-  const observer = new IntersectionObserver((entries) => {
-    entries.forEach(entry => {
-      if (entry.isIntersecting) { entry.target.classList.add('visible'); observer.unobserve(entry.target); }
-    });
-  }, { threshold: 0.1 });
-  sections.forEach(s => observer.observe(s));
-
-  document.querySelectorAll('a, button').forEach(el => {
+document.querySelectorAll('a, button').forEach(el => {
     el.addEventListener('mouseenter', () => cursor.classList.add('link-hover'));
     el.addEventListener('mouseleave', () => cursor.classList.remove('link-hover'));
   });
