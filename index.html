@@ -5,7 +5,7 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 <link rel="icon" type="image/png" href="wh-img/img-45.png">
 <title>Nina Briantseva — Portfolio</title>
 <style>
@@ -18,7 +18,7 @@
 
   nav { position: fixed; top: 0; left: 0; right: 0; display: flex; justify-content: space-between; align-items: center; padding: 24px 48px; z-index: 1000; background: #1d1f24; border-bottom: 1px solid transparent; transition: background 0.5s ease, border-color 0.3s, color 0.5s; }
   nav.scrolled { border-bottom-color: rgba(249,248,246,0.1); }
-  .nav-logo { font-size: 14px; color: #f9f8f6; text-decoration: none; }
+  .nav-logo { font-size: 14px; color: #f9f8f6; text-decoration: none; text-transform: uppercase; letter-spacing: 0.08em; }
   .nav-links { display: flex; gap: 36px; }
   .nav-links a { font-size: 12px; letter-spacing: 0.14em; text-transform: uppercase; color: #999; text-decoration: none; transition: color 0.3s; }
   .nav-links a:hover { color: #f9f8f6; }
@@ -143,7 +143,7 @@
   .hero-side-text {
     font-family: 'DM Sans', sans-serif;
     font-size: 13px;
-    font-weight: 300;
+    font-weight: 400;
     color: rgba(255,255,255,0.65);
     line-height: 1.65;
   }
@@ -275,7 +275,7 @@
 
     /* Nav — always solid on mobile, never transparent */
     html, body { overscroll-behavior-y: none; }
-    nav { padding: 16px 20px; background: #1d1f24 !important; border-bottom-color: rgba(249,248,246,0.1) !important; }
+    nav { padding: 16px 20px; padding-top: calc(16px + env(safe-area-inset-top, 0px)); background: #1d1f24 !important; border-bottom-color: rgba(249,248,246,0.1) !important; }
     nav.on-hero { background: #1d1f24 !important; }
     .nav-links { gap: 18px; }
     .nav-links a { font-size: 11px; letter-spacing: 0.1em; }
