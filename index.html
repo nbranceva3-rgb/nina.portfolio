@@ -284,6 +284,28 @@
 
   @keyframes fadeUp { from { opacity: 0; transform: translateY(16px); } to { opacity: 1; transform: translateY(0); } }
 
+  /* ====== TABLET RESPONSIVE ====== */
+  @media (min-width: 769px) and (max-width: 1024px) {
+    /* Hero — stack side blocks above/below center text (like mobile) */
+    .hero { height: 100svh; flex-direction: column; justify-content: center; gap: 0; }
+    .hero-text-center { order: 2; }
+
+    .hero-left, .hero-right {
+      display: block;
+      position: static;
+      transform: none;
+      width: 100%;
+      text-align: center;
+      opacity: 0;
+      transition: opacity 0.6s ease;
+      padding: 0 40px;
+    }
+    .hero-left.visible, .hero-right.visible { opacity: 1; }
+    .hero-left { order: 1; margin-bottom: 32px; }
+    .hero-right { order: 3; margin-top: 32px; }
+    .hero-side-text { font-size: 14px; line-height: 1.65; font-weight: 500; }
+  }
+
   /* ====== MOBILE RESPONSIVE ====== */
   @media (max-width: 768px) {
     body { cursor: auto; }
