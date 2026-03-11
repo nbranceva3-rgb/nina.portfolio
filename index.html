@@ -37,6 +37,11 @@
     transition: opacity 0.8s ease;
   }
   #hero-loader.done { opacity: 0; pointer-events: none; }
+  .loader-ring-wrap {
+    position: relative;
+    width: 80px;
+    height: 80px;
+  }
   .loader-circle {
     width: 80px;
     height: 80px;
@@ -49,6 +54,17 @@
     font-size: 13px;
     color: #fff;
     letter-spacing: 0.05em;
+  }
+  .loader-orbit-dot {
+    position: absolute;
+    width: 8px;
+    height: 8px;
+    background: #f9f8f6;
+    border-radius: 50%;
+    top: -4px;
+    left: 36px;
+    transform-origin: 4px 44px;
+    transform: rotate(0deg);
   }
 
   /* NAV — dark state over hero */
@@ -380,8 +396,11 @@
 <div class="cursor" id="cursor"></div>
 
 <div id="hero-loader">
-  <div class="loader-circle">
-    <span id="hero-loader-pct">0%</span>
+  <div class="loader-ring-wrap">
+    <div class="loader-circle">
+      <span id="hero-loader-pct">0%</span>
+    </div>
+    <div class="loader-orbit-dot" id="loaderDot"></div>
   </div>
 </div>
 
@@ -537,6 +556,7 @@
 (function() {
   var pct = document.getElementById('hero-loader-pct');
   var loader = document.getElementById('hero-loader');
+  var dot = document.getElementById('loaderDot');
   var nav = document.getElementById('nav');
   var count = 0;
   var steps = 100;
@@ -544,6 +564,7 @@
   var timer = setInterval(function() {
     count++;
     pct.textContent = count + '%';
+    if (dot) dot.style.transform = 'rotate(' + (count * 3.6) + 'deg)';
     if (count >= steps) {
       clearInterval(timer);
       // Fade out loader
@@ -673,6 +694,7 @@ caseBlocks.forEach(block => observer.observe(block));
 (function() {
   var pct = document.getElementById('hero-loader-pct');
   var loader = document.getElementById('hero-loader');
+  var dot = document.getElementById('loaderDot');
   var nav = document.getElementById('nav');
   var count = 0;
   var steps = 100;
@@ -680,6 +702,7 @@ caseBlocks.forEach(block => observer.observe(block));
   var timer = setInterval(function() {
     count++;
     pct.textContent = count + '%';
+    if (dot) dot.style.transform = 'rotate(' + (count * 3.6) + 'deg)';
     if (count >= steps) {
       clearInterval(timer);
       // Fade out loader
