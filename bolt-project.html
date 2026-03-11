@@ -140,6 +140,10 @@
     .section-body p { font-size: 17px; line-height: 1.8; color: #555; max-width: 620px; margin-bottom: 20px; }
     .section-body p:last-child { margin-bottom: 0; }
 
+    .solution-intro { display: flex; gap: 32px; align-items: flex-start; margin-bottom: 0; }
+    .solution-character { width: 140px; flex-shrink: 0; height: auto; display: block; border-radius: 8px; }
+    .solution-text { flex: 1; }
+    .solution-caption { font-size: 14px !important; line-height: 1.6 !important; color: #aaa !important; font-style: italic; margin-top: 12px; }
     .how-list { margin-top: 40px; display: flex; flex-direction: column; }
     .how-item { display: flex; gap: 24px; align-items: flex-start; padding: 24px 0; border-bottom: 1px solid #efefef; }
     .how-item:first-child { border-top: 1px solid #efefef; }
@@ -344,8 +348,14 @@
     <p class="section-label">The Solution</p>
     <div class="section-body">
       <h2>Quick safety quizzes</h2>
-      <p>We propose adding Quick Safety Quizzes to the Bolt app — short, gamified tests that educate users on the most important safety rules at exactly the right moment.</p>
-      <p>By analysing the user journey, the ideal placement was found: the quiz appears either randomly after booking a moped, or when the user scrolls through the booking screen.</p>
+      <div class="solution-intro">
+        <img src="wh-img/img-57.png" alt="Character reacting to quiz answers" class="solution-character">
+        <div class="solution-text">
+          <p>We propose adding Quick Safety Quizzes to the Bolt app — short, gamified tests that educate users on the most important safety rules at exactly the right moment.</p>
+          <p>By analysing the user journey, the ideal placement was found: the quiz appears either randomly after booking a moped, or when the user scrolls through the booking screen.</p>
+          <p class="solution-caption">A character was crafted to respond to both correct and incorrect answers — adding a layer of playfulness that transforms each quiz into a moment of genuine delight.</p>
+        </div>
+      </div>
       <div class="how-list">
         <div class="how-item"><span class="how-num">01</span><span class="how-text">Appears randomly after booking a moped or during the booking screen scroll</span></div>
         <div class="how-item"><span class="how-num">02</span><span class="how-text">Takes only 30 seconds — minimal friction, maximum impact</span></div>
@@ -355,10 +365,6 @@
     </div>
   </div>
 
-  <div style="margin-top: 40px; max-width: 680px; margin-left: auto; margin-right: auto;">
-    <img src="wh-img/img-57.png" alt="Character reacting to quiz answers" style="width: 100%; height: auto; display: block; border-radius: 4px;">
-    <p style="margin-top: 16px; font-size: 15px; line-height: 1.7; color: #888; text-align: center; font-style: italic;">A character was crafted to respond to both correct and incorrect answers — adding a layer of playfulness that transforms each quiz into a moment of genuine delight.</p>
-  </div>
 
 </div>
 <div class="project-content">
