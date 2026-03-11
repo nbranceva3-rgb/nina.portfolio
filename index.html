@@ -298,7 +298,8 @@
     .hero-left.visible, .hero-right.visible { opacity: 1; }
     .hero-left { order: 1; margin-bottom: 24px; }
     .hero-right { order: 3; margin-top: 24px; }
-    .hero-side-text { font-size: 12px; line-height: 1.6; }
+    .hero-side-text { font-size: 12px; line-height: 1.6; font-weight: 500; }
+    .hero-bg-iframe::after { content: ''; position: absolute; inset: 0; background: rgba(0,0,0,0.05); pointer-events: none; z-index: 1; }
 
     /* Work section */
     .work { grid-template-columns: 1fr; }
