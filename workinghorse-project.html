@@ -147,6 +147,20 @@
     .how-text { font-size: 16px; line-height: 1.7; color: #444; min-width: 0; }
     .how-text strong { color: #111; font-weight: 500; }
 
+    /* RESEARCH BUTTON */
+    .research-btn {
+      display: block; width: fit-content;
+      margin-top: 40px;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 12px; letter-spacing: 0.12em; text-transform: uppercase;
+      color: #111; text-decoration: none;
+      border: 1px solid #111; border-radius: 8px;
+      padding: 12px 24px;
+      transition: background 0.25s, color 0.25s;
+      cursor: pointer;
+    }
+    .research-btn:hover { background: #111; color: #f9f8f6; }
+
     /* INSIGHT BOX */
     .insight-box {
       background: #111; color: #f9f8f6;
@@ -196,7 +210,11 @@
     .hifi-grid {
       display: grid;
       grid-template-columns: repeat(2, 1fr);
-      gap: 16px;
+      gap: 24px 16px;
+    }
+    .hifi-figure {
+      display: flex; flex-direction: column; gap: 10px;
+      margin: 0;
     }
     .hifi-img {
       width: 100%; height: auto; display: block;
@@ -207,6 +225,11 @@
     .hifi-img:hover {
       transform: scale(1.02);
       box-shadow: 0 8px 32px rgba(0,0,0,0.1);
+    }
+    .hifi-caption {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 10px; letter-spacing: 0.08em;
+      color: #999; line-height: 1.5;
     }
 
     /* LO-FI grid — 4 columns, smaller */
@@ -269,7 +292,7 @@
       .insight-box { padding: 28px 20px; }
       .hero-image-wrap { padding: 0; width: 100vw; max-width: none; margin-left: -20px; align-self: flex-start; }
       .hero-image-wrap img { border-radius: 0; width: 100%; display: block; margin: 0; }
-      .section-aside-img { width: 50% !important; max-width: 50% !important; margin-left: 0 !important; margin-top: 16px !important; }
+      .section-aside-img { width: 75% !important; max-width: 75% !important; margin-left: auto !important; margin-right: auto !important; margin-top: 16px !important; }
       .project-content { padding: 0 24px; }
       .content-section { grid-template-columns: 1fr; gap: 24px; }
       .section-label { position: static; }
@@ -329,6 +352,29 @@
     .ph-pill--md { padding: 8px 14px; font-size: 12px; }
     .ph-pill--sm { padding: 6px 10px; font-size: 10px; }
     .ph-sep { font-size: 18px; color: #aaa; font-weight: 300; line-height: 1; }
+
+    /* ONBOARDING TOGGLE */
+    .ob-toggle-btn {
+      display: inline-flex; align-items: center; gap: 8px;
+      margin-top: 36px;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 11px; letter-spacing: 0.14em; text-transform: uppercase;
+      color: #999; background: none; border: none;
+      padding: 0; cursor: pointer;
+      transition: color 0.25s;
+    }
+    .ob-toggle-btn:hover { color: #111; }
+    .ob-toggle-arrow {
+      display: inline-block;
+      transition: transform 0.35s ease;
+    }
+    .ob-toggle-btn.open .ob-toggle-arrow { transform: rotate(180deg); }
+    .ob-collapsible {
+      max-height: 0;
+      overflow: hidden;
+      transition: max-height 0.55s cubic-bezier(0.4,0,0.2,1);
+    }
+    .ob-collapsible.open { max-height: 3000px; }
 
     /* LIGHTBOX */
     #lb-overlay { display:none; position:fixed; inset:0; background:rgba(0,0,0,0.96); z-index:10000; align-items:center; justify-content:center; }
@@ -463,11 +509,16 @@
           <div class="how-text"><strong>Focus Mode</strong>, history and No-Go Sites — tools for deep focus, introduced only after the user understands the core product.</div>
         </div>
       </div>
+      <button class="ob-toggle-btn" id="obToggleBtn" aria-expanded="false">
+        <span id="obToggleLabel">See onboarding mockups</span>
+        <span class="ob-toggle-arrow">↓</span>
+      </button>
     </div>
   </div>
 </div>
 
-<!-- ONBOARDING SCROLL STRIP — full width -->
+<!-- ONBOARDING SCROLL STRIP — full width, collapsible -->
+<div class="ob-collapsible" id="obCollapsible">
 <div class="ob-tile-wrap">
   <div class="ob-tile-grid">
     <div class="ob-item"><img class="ob-img" loading="lazy" src="wh-img/img-47.png" alt="1/6 — Import your tabs"><span class="ob-label">1/6 — Import your tabs</span></div>
@@ -481,6 +532,7 @@
     <div class="ob-item"><img class="ob-img" loading="lazy" src="wh-img/img-54.png" alt="Done — Congratulations"><span class="ob-label">Done — Congratulations</span></div>
   </div>
 </div>
+</div><!-- /ob-collapsible -->
 
 <div class="project-content">
 
@@ -511,6 +563,7 @@
           <div class="how-text">Added a dedicated screen <strong>explaining Focus Mode</strong> before the paywall — what it does, how it helps, and why it's worth upgrading. Users need to understand what they're buying before being asked to pay.</div>
         </div>
       </div>
+      <a href="CJM_translated_1_.html" class="research-btn">See the research →</a>
     </div>
   </div>
 
@@ -542,7 +595,38 @@
       <h2>The screens</h2>
     </div>
     <div class="hifi-grid">
-      <img class="hifi-img" loading="lazy" src="wh-img/img-11.png" alt="Working Horse screen 1"><img class="hifi-img" loading="lazy" src="wh-img/img-14.png" alt="Working Horse screen 4"><img class="hifi-img" loading="lazy" src="wh-img/img-15.png" alt="Working Horse screen 5"><img class="hifi-img" loading="lazy" src="wh-img/img-13.png" alt="Working Horse screen 3"><img class="hifi-img" loading="lazy" src="wh-img/img-12.png" alt="Working Horse screen 2"><img class="hifi-img" loading="lazy" src="wh-img/img-17.png" alt="Working Horse screen 7"><img class="hifi-img" loading="lazy" src="wh-img/img-16.png" alt="Working Horse screen 6"><img class="hifi-img" loading="lazy" src="wh-img/img-26.png" alt="Working Horse screen 8">
+      <figure class="hifi-figure">
+        <img class="hifi-img" loading="lazy" src="wh-img/img-11.png" alt="Unsorted links screen — premium status">
+        <figcaption class="hifi-caption">Unsorted links screen. Premium status indicator shown in the top-right corner.</figcaption>
+      </figure>
+      <figure class="hifi-figure">
+        <img class="hifi-img" loading="lazy" src="wh-img/img-14.png" alt="Move to folder popup">
+        <figcaption class="hifi-caption">Popup triggered by "Move to folder". User can pick an existing folder or create a new one via "Add folder".</figcaption>
+      </figure>
+      <figure class="hifi-figure">
+        <img class="hifi-img" loading="lazy" src="wh-img/img-15.png" alt="Add the links confirmation popup">
+        <figcaption class="hifi-caption">"Add the links" popup inside "Choose the folder". User can dismiss this confirmation step.</figcaption>
+      </figure>
+      <figure class="hifi-figure">
+        <img class="hifi-img" loading="lazy" src="wh-img/img-13.png" alt="Sorted links screen">
+        <figcaption class="hifi-caption">Sorted links screen. No folder has "Lock the links" active — tooltip explains what the button does.</figcaption>
+      </figure>
+      <figure class="hifi-figure">
+        <img class="hifi-img" loading="lazy" src="wh-img/img-12.png" alt="Pricing screen">
+        <figcaption class="hifi-caption">Pricing screen. Reached via the inactive Focus Mode icon or from settings.</figcaption>
+      </figure>
+      <figure class="hifi-figure">
+        <img class="hifi-img" loading="lazy" src="wh-img/img-17.png" alt="Premium checkout — fields filled">
+        <figcaption class="hifi-caption">Premium subscription checkout — all fields completed, ready to confirm.</figcaption>
+      </figure>
+      <figure class="hifi-figure">
+        <img class="hifi-img" loading="lazy" src="wh-img/img-16.png" alt="Premium checkout — success">
+        <figcaption class="hifi-caption">Premium subscription — success screen.</figcaption>
+      </figure>
+      <figure class="hifi-figure">
+        <img class="hifi-img" loading="lazy" src="wh-img/img-26.png" alt="Focus Mode hover — no premium">
+        <figcaption class="hifi-caption">Cursor hovering over Focus Mode — user has selected links but has no premium subscription.</figcaption>
+      </figure>
     </div>
   </div>
 </div>
@@ -567,11 +651,21 @@
     cursor.style.top = e.clientY + 'px';
     cursor.style.opacity = '1';
   });
-document.querySelectorAll('a, button').forEach(el => {
+  document.querySelectorAll('a, button').forEach(el => {
     el.addEventListener('mouseenter', () => cursor.classList.add('link-hover'));
     el.addEventListener('mouseleave', () => cursor.classList.remove('link-hover'));
   });
 
+  // Onboarding toggle
+  const obBtn = document.getElementById('obToggleBtn');
+  const obPanel = document.getElementById('obCollapsible');
+  const obLabel = document.getElementById('obToggleLabel');
+  obBtn.addEventListener('click', () => {
+    const isOpen = obPanel.classList.toggle('open');
+    obBtn.classList.toggle('open', isOpen);
+    obBtn.setAttribute('aria-expanded', isOpen);
+    obLabel.textContent = isOpen ? 'Hide onboarding mockups' : 'See onboarding mockups';
+  });
 </script>
 
 <div id="lb-overlay" role="dialog" aria-modal="true">
